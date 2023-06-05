@@ -1,5 +1,5 @@
 import axios from "axios";
-import { YoutubeApi } from "../../Const";
+import { YoutubeApi } from "../Const";
 
 interface Iprops {
   results: number;
@@ -10,9 +10,8 @@ export const fetchVideo = async ({ results, term }: Iprops) => {
     const res = await axios.get(`${YoutubeApi}/search`, {
       params: {
         part: "snippet",
-        maxResults: results,
         chart: "mostPopular",
-        key: "AIzaSyBaNi-MTp8i3RyR0Kr34b2FFtxPWW7jXe4",
+        key: "AIzaSyAoAGjukxjbOEXBc1fQDewX5W3wgmfXQQE",
         q: term,
       },
     });

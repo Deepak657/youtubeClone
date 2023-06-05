@@ -3,18 +3,20 @@ import { BsDot } from "react-icons/bs";
 import { Views } from "./HomeCard";
 import styled from "styled-components";
 
-const SearchVideoCard = () => {
+interface Iprops {
+  image: string;
+  title: string;
+  channelTitle: string;
+  description: string;
+}
+
+const SearchVideoCard = (props: Iprops) => {
+  const { image, title, channelTitle, description } = props;
   return (
     <SearchVideoCardWrapper>
-      <Image
-        src="https://i.ytimg.com/vi/9-fIftd_ISQ/maxresdefault.jpg"
-        alt=""
-      />
+      <Image src={image} alt="" />
       <Genric>
-        <Title>
-          Lucky No.7 (Official Video) Mankirt Aulakh | Baani Sandhu | Jayy
-          Randhawa | New Punjabi Song 2023
-        </Title>
+        <Title>{title}</Title>
         <Views>
           1.1M Views{" "}
           <span>
@@ -27,12 +29,9 @@ const SearchVideoCard = () => {
             src="https://i.ytimg.com/vi/9-fIftd_ISQ/maxresdefault.jpg"
             alt=""
           />
-          <ChannelTitle>Desi Junction Music</ChannelTitle>
+          <ChannelTitle>{channelTitle}</ChannelTitle>
         </ChannelTitleWrapper>
-        <Description>
-          Welcome to Official Channel Of Punjabi Singer & Lyricst Shree Brar.
-          Shree Brar Presenting Official Video of "BHABI" Sung By
-        </Description>
+        <Description>{description}</Description>
         {/* <div>
           <div>New</div>
           <div>4k</div>
@@ -51,6 +50,7 @@ const ChannelTitleWrapper = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;
+  margin: 15px 0;
 `;
 
 const ImageChannel = styled.img`
@@ -61,9 +61,10 @@ const ImageChannel = styled.img`
 `;
 
 const Title = styled.div`
-  font-size: 20px;
+  font-size: 18px;
   font-family: sans-serif;
   font-weight: 700;
+  margin-bottom: 5px;
   color: #fff;
 `;
 
@@ -85,7 +86,7 @@ const Genric = styled.div`
 `;
 
 const SearchVideoCardWrapper = styled.div`
-  max-width: 900px;
+  max-width: 1100px;
   display: flex;
   align-items: flex-start;
   gap: 20px;

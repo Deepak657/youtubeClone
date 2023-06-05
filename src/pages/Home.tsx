@@ -4,7 +4,7 @@ import HomeCard from "../components/Cards/HomeCard";
 import { TabList } from "../Util";
 import TabCard from "../components/Cards/TabCard";
 // import Carousel from "nuka-carousel";
-import { fetchVideo } from "../components/services/YoutubeService";
+import { fetchVideo } from "../services/YoutubeService";
 interface IProps {
   id: {
     videoId: string;
@@ -85,7 +85,7 @@ const Home = () => {
   );
 };
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   max-width: 1300px;
   margin: 20px auto 0;
 `;
