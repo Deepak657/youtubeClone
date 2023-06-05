@@ -7,12 +7,10 @@ import { RiVideoAddLine } from "react-icons/ri";
 import { MdOutlineNotifications } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { AiOutlineSearch } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
-interface Iprops {
-  onChange: (value: string) => void;
-}
-
-const Header = ({ onChange }: Iprops) => {
+const Header = () => {
+  const navigate = useNavigate();
   const [term, setTerm] = useState("");
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTerm(event.target.value);
@@ -33,7 +31,7 @@ const Header = ({ onChange }: Iprops) => {
             value={term}
             onChange={handleChange}
           />
-          <Button onClick={() => term && onChange(term)}>
+          <Button onClick={() => navigate(`/results/${term}`)}>
             <AiOutlineSearch />
           </Button>
         </SearchField>

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import styled from "styled-components";
 import HomeCard from "../components/Cards/HomeCard";
 import { TabList } from "../Util";
 import TabCard from "../components/Cards/TabCard";
 // import Carousel from "nuka-carousel";
-
+import { fetchVideo } from "../components/services/YoutubeService";
 interface IProps {
   id: {
     videoId: string;
@@ -25,11 +24,7 @@ interface IProps {
   };
 }
 
-interface Ivalue {
-  value: string;
-}
-
-const Home = ({ value }: Ivalue) => {
+const Home = () => {
   const [homeVideos, setHomeVideos] = useState<IProps[]>([]);
   const [results, setResults] = useState(10);
   const [term, setTerm] = useState("All");
@@ -43,33 +38,21 @@ const Home = ({ value }: Ivalue) => {
   };
 
   useEffect(() => {
-    value && setTerm(value);
-    const fetchVideo = async () => {
+    const getVideo = async () => {
       try {
-        const res = await axios.get(
-          "https://www.googleapis.com/youtube/v3/search",
-          {
-            params: {
-              part: "snippet",
-              maxResults: results,
-              chart: "mostPopular",
-              key: "AIzaSyBaNi-MTp8i3RyR0Kr34b2FFtxPWW7jXe4",
-              q: term,
-            },
-          }
-        );
-        setHomeVideos(res.data.items);
-        console.log(res.data.items);
+        const video = await fetchVideo({ results, term });
+        setHomeVideos(video);
+        console.log(video);
       } catch (err) {
         console.error(err);
       }
     };
-    fetchVideo();
+    getVideo();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [results, term, value]);
+  }, [results, term]);
 
   return (
     <Wrapper>

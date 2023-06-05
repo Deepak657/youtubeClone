@@ -11,7 +11,8 @@ interface Iprops {
   publishedAt: String;
 }
 
-const HomeCard = ({ image, id, title, channelTitle, publishedAt }: Iprops) => {
+const HomeCard = (video: Iprops) => {
+  const { image, id, title, channelTitle, publishedAt } = video;
   const navigate = useNavigate();
   return (
     <HomeCardStyle>
@@ -37,7 +38,7 @@ const HomeCard = ({ image, id, title, channelTitle, publishedAt }: Iprops) => {
   );
 };
 
-const Views = styled.div`
+export const Views = styled.div`
   display: flex;
   align-items: center;
   gap: 2px;
