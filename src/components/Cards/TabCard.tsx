@@ -1,5 +1,6 @@
 import React, { ButtonHTMLAttributes } from "react";
 import styled from "styled-components";
+import { theme } from "../../Theme";
 
 interface Iprops extends ButtonHTMLAttributes<HTMLButtonElement> {
   tab: string;
@@ -11,10 +12,10 @@ const TabCard = ({ tab, ...restProps }: Iprops) => {
 
 const Tab = styled.button`
   border: none;
-  color: #fff;
+  color: ${theme.color.white};
   padding: 6px 14px;
   border-radius: 10px;
-  background: #242424;
+  background: ${theme.color.lightblack};
   cursor: pointer;
   :hover {
     background: #4e4e4e;

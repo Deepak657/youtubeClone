@@ -2,6 +2,7 @@ import React from "react";
 import { BsThreeDotsVertical, BsDot } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { theme } from "../../Theme";
 
 interface Iprops {
   image: string;
@@ -9,14 +10,20 @@ interface Iprops {
   title: string;
   channelTitle: string;
   publishedAt: String;
+  onChange: (value: string) => void;
 }
 
 const HomeCard = (video: Iprops) => {
-  const { image, id, title, channelTitle, publishedAt } = video;
+  const { image, id, title, channelTitle, publishedAt, onChange } = video;
   const navigate = useNavigate();
+
+  const handleImage = (id: string, title: string) => {
+    navigate(`/video/${id}`);
+    onChange(title);
+  };
   return (
     <HomeCardStyle>
-      <Image src={image} alt="" onClick={() => navigate(`/video/${id}`)} />
+      <Image src={image} alt="" onClick={() => handleImage(id, title)} />
       <Details>
         <DetailImage src={image} alt="" />
         <TitleWrapper>
@@ -42,8 +49,7 @@ export const Views = styled.div`
   display: flex;
   align-items: center;
   gap: 2px;
-  color: #ffffff7e;
-  font-family: sans-serif;
+  color: ${theme.color.lightwhite};
   font-size: 16px;
 `;
 const TitleWrapper = styled.div`
@@ -51,15 +57,18 @@ const TitleWrapper = styled.div`
 `;
 
 const Title = styled.div`
+  width: 100%;
   line-height: 1.5;
-  font-family: sans-serif;
-  font-weight: 700;
   font-size: 15px;
-  color: #fff;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  color: ${theme.color.white};
 `;
 const ChannelTitle = styled.div`
-  color: #ffffff7e;
-  font-family: sans-serif;
+  color: ${theme.color.lightwhite};
+
   font-size: 16px;
   margin: 6px 0 3px;
 `;
@@ -92,7 +101,7 @@ const Image = styled.img`
 `;
 
 const Menu = styled.div`
-  color: #fff;
+  color: ${theme.color.white};
   font-size: 18px;
 `;
 

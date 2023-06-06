@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { fetchVideo } from "../services/YoutubeService";
 import { Wrapper } from "./Home";
+import FilterCard from "../components/Cards/FilterCard";
 
 interface IProps {
   id: {
@@ -58,12 +59,14 @@ const SearchResults = () => {
 
   return (
     <Wrapper>
+      <FilterCard />
       <SearchResultsWrapper>
         {searchVideos.map((video) => {
           return (
             <SearchVideoCard
               key={video.id.videoId}
-              image={video.snippet.thumbnails.default.url}
+              id={video.id.videoId}
+              image={video.snippet.thumbnails.high.url}
               title={video.snippet.title}
               channelTitle={video.snippet.channelTitle}
               description={video.snippet.description}

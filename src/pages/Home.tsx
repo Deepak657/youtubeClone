@@ -5,7 +5,7 @@ import { TabList } from "../Util";
 import TabCard from "../components/Cards/TabCard";
 // import Carousel from "nuka-carousel";
 import { fetchVideo } from "../services/YoutubeService";
-interface IProps {
+export interface IProps {
   id: {
     videoId: string;
   };
@@ -23,8 +23,11 @@ interface IProps {
     };
   };
 }
+interface Ititle {
+  onChange: (value: string) => void;
+}
 
-const Home = () => {
+const Home = ({ onChange }: Ititle) => {
   const [homeVideos, setHomeVideos] = useState<IProps[]>([]);
   const [results, setResults] = useState(10);
   const [term, setTerm] = useState("All");
@@ -42,7 +45,7 @@ const Home = () => {
       try {
         const video = await fetchVideo({ results, term });
         setHomeVideos(video);
-        console.log(video);
+        // console.log(video);
       } catch (err) {
         console.error(err);
       }
@@ -77,6 +80,7 @@ const Home = () => {
               title={video.snippet.title}
               channelTitle={video.snippet.channelTitle}
               publishedAt={video.snippet.publishedAt}
+              onChange={onChange}
             />
           );
         })}
@@ -87,14 +91,17 @@ const Home = () => {
 
 export const Wrapper = styled.div`
   max-width: 1300px;
-  margin: 20px auto 0;
+  margin: auto;
 `;
 const TabWrapper = styled.div`
+  padding: 20px 0;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 40px;
+  position: sticky;
+  top: 64px;
+  background: #000;
 `;
 
 const HomeCardWrapper = styled.div`

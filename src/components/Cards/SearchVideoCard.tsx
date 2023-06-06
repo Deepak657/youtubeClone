@@ -2,8 +2,11 @@ import React from "react";
 import { BsDot } from "react-icons/bs";
 import { Views } from "./HomeCard";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { theme } from "../../Theme";
 
 interface Iprops {
+  id: string;
   image: string;
   title: string;
   channelTitle: string;
@@ -11,10 +14,11 @@ interface Iprops {
 }
 
 const SearchVideoCard = (props: Iprops) => {
-  const { image, title, channelTitle, description } = props;
+  const { id, image, title, channelTitle, description } = props;
+  const navigate = useNavigate();
   return (
     <SearchVideoCardWrapper>
-      <Image src={image} alt="" />
+      <Image src={image} alt="" onClick={() => navigate(`/video/${id}`)} />
       <Genric>
         <Title>{title}</Title>
         <Views>
@@ -25,10 +29,7 @@ const SearchVideoCard = (props: Iprops) => {
           5 days ago
         </Views>
         <ChannelTitleWrapper>
-          <ImageChannel
-            src="https://i.ytimg.com/vi/9-fIftd_ISQ/maxresdefault.jpg"
-            alt=""
-          />
+          <ImageChannel src={image} alt="" />
           <ChannelTitle>{channelTitle}</ChannelTitle>
         </ChannelTitleWrapper>
         <Description>{description}</Description>
@@ -43,7 +44,7 @@ const SearchVideoCard = (props: Iprops) => {
 
 const ChannelTitle = styled.div`
   font-size: 14px;
-  color: #fff;
+  color: ${theme.color.lightwhite};
 `;
 
 const ChannelTitleWrapper = styled.div`
@@ -62,23 +63,21 @@ const ImageChannel = styled.img`
 
 const Title = styled.div`
   font-size: 18px;
-  font-family: sans-serif;
   font-weight: 700;
   margin-bottom: 5px;
-  color: #fff;
+  color: ${theme.color.white};
 `;
 
 const Description = styled.div`
   font-size: 14px;
-  font-family: sans-serif;
-  font-weight: 700;
-  color: #ababab;
+  color: ${theme.color.lightwhite};
 `;
 const Image = styled.img`
   width: 360px;
   height: 200px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 20px;
+  cursor: pointer;
 `;
 
 const Genric = styled.div`

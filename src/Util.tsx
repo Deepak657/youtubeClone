@@ -53,3 +53,122 @@ export const TabList: Itab[] = [
     tab: "Live",
   },
 ];
+
+export const UploadDate: Itab[] = [
+  {
+    id: 1,
+    tab: "Last hour",
+  },
+  {
+    id: 2,
+    tab: "Today",
+  },
+  {
+    id: 3,
+    tab: "This week",
+  },
+  {
+    id: 4,
+    tab: "This month",
+  },
+  {
+    id: 5,
+    tab: "This year",
+  },
+];
+export const Type: Itab[] = [
+  {
+    id: 1,
+    tab: "Video",
+  },
+  {
+    id: 2,
+    tab: "Channel",
+  },
+  {
+    id: 3,
+    tab: "Playlist",
+  },
+  {
+    id: 4,
+    tab: "Film",
+  },
+];
+export const Duration: Itab[] = [
+  {
+    id: 1,
+    tab: "Under 4 minutes",
+  },
+  {
+    id: 2,
+    tab: "4–20 minutes",
+  },
+  {
+    id: 3,
+    tab: "Over 20 minutes",
+  },
+];
+export const Features: Itab[] = [
+  {
+    id: 1,
+    tab: "Live",
+  },
+  {
+    id: 2,
+    tab: "4K",
+  },
+  {
+    id: 3,
+    tab: "HD",
+  },
+  {
+    id: 4,
+    tab: "Subtitles/CC",
+  },
+  {
+    id: 5,
+    tab: "Creative Commons",
+  },
+  {
+    id: 6,
+    tab: "360°",
+  },
+  {
+    id: 7,
+    tab: "VR180",
+  },
+  {
+    id: 8,
+    tab: "3D",
+  },
+  {
+    id: 9,
+    tab: "HDR",
+  },
+  {
+    id: 10,
+    tab: "Location",
+  },
+  {
+    id: 11,
+    tab: "Purchased",
+  },
+];
+export const SortBy: Itab[] = [
+  {
+    id: 1,
+    tab: "Relevance",
+  },
+  {
+    id: 2,
+    tab: "Upload date",
+  },
+  {
+    id: 3,
+    tab: "View count",
+  },
+  {
+    id: 4,
+    tab: "Rating",
+  },
+];
