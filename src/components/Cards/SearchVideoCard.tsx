@@ -4,32 +4,39 @@ import { Views } from "./HomeCard";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../../Theme";
+import { ISearch } from "../../pages/SearchResults";
 
 interface Iprops {
-  id: string;
-  image: string;
-  title: string;
-  channelTitle: string;
-  description: string;
+  video: ISearch;
+  onChange: (value: string) => void;
 }
 
-const SearchVideoCard = (props: Iprops) => {
-  const { id, image, title, channelTitle, description } = props;
+const SearchVideoCard = ({ video, onChange }: Iprops) => {
+  const { id, snippet } = video;
+  const { channelTitle, description, thumbnails, title } = snippet;
   const navigate = useNavigate();
+  const handleImage = (id: string, title: string) => {
+    navigate(`/video/${id}`);
+    onChange(title);
+  };
   return (
     <SearchVideoCardWrapper>
-      <Image src={image} alt="" onClick={() => navigate(`/video/${id}`)} />
+      <Image
+        src={thumbnails.high.url}
+        alt=""
+        onClick={() => handleImage(id.videoId, title)}
+      />
       <Genric>
         <Title>{title}</Title>
         <Views>
-          1.1M Views{" "}
+          {Math.floor(Math.random() * 100 + 1)}M Views{" "}
           <span>
             <BsDot />
           </span>
           5 days ago
         </Views>
         <ChannelTitleWrapper>
-          <ImageChannel src={image} alt="" />
+          <ImageChannel src={thumbnails.high.url} alt="" />
           <ChannelTitle>{channelTitle}</ChannelTitle>
         </ChannelTitleWrapper>
         <Description>{description}</Description>

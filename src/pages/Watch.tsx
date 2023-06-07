@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import VIdeoPlay from "../components/VIdeoPlay";
 import SuggestionCard from "../components/Cards/SuggestionCard";
 import { fetchVideo, fetchComment } from "../services/YoutubeService";
 import { useParams } from "react-router-dom";
-import { IProps } from "./Home";
+import { IHomeCard } from "./Home";
 import CommentCard from "../components/Cards/CommentCard";
 
 interface Iterm {
   term: string;
+  onChange: (value: string) => void;
 }
-interface Icomment {
+export interface Icomment {
   id: string;
   snippet: {
     topLevelComment: {
@@ -22,8 +23,8 @@ interface Icomment {
     };
   };
 }
-const Watch = ({ term }: Iterm) => {
-  const [suggestVideos, setSuggestVideos] = useState<IProps[]>([]);
+const Watch = ({ term, onChange }: Iterm) => {
+  const [suggestVideos, setSuggestVideos] = useState<IHomeCard[]>([]);
   const [comment, setComment] = useState<Icomment[]>([]);
 
   const { vId } = useParams();
@@ -37,62 +38,43 @@ const Watch = ({ term }: Iterm) => {
       setResults((prev) => prev + 10);
     }
   };
-
-  useEffect(() => {
+  const getVideo = useCallback(async () => {
     if (!term || !vId) {
       return;
     }
-    const getVideo = async () => {
-      try {
-        const video = await fetchVideo({ results, term });
-        const comment = await fetchComment(results, vId);
-        setSuggestVideos(video);
-        setComment(comment);
-        console.log(comment);
-      } catch (err) {
-        console.error(err);
-      }
-    };
+    try {
+      const video = await fetchVideo({ results, term });
+      const comment = await fetchComment(results, vId);
+      setSuggestVideos(video);
+      setComment(comment);
+      // console.log(comment);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [results, term, vId]);
+
+  useEffect(() => {
     getVideo();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [results, term, vId]);
+  }, [getVideo]);
 
   return (
     <WatchWrapper>
       <WatchVideo>
         <VIdeoPlay id={vId} />
         <CommentWrapper>
-          {comment.map((comment) => {
-            return (
-              <CommentCard
-                key={comment.id}
-                image={
-                  comment.snippet.topLevelComment.snippet.authorProfileImageUrl
-                }
-                auther={
-                  comment.snippet.topLevelComment.snippet.authorDisplayName
-                }
-                discription={
-                  comment.snippet.topLevelComment.snippet.textDisplay
-                }
-              />
-            );
+          {comment.map((comment: Icomment, index) => {
+            return <CommentCard comment={comment} key={index} />;
           })}
         </CommentWrapper>
       </WatchVideo>
       <Suggestion>
-        {suggestVideos.map((video) => {
+        {suggestVideos.map((video: IHomeCard, index) => {
           return (
-            <SuggestionCard
-              key={video.id.videoId}
-              id={video.id.videoId}
-              image={video.snippet.thumbnails.high.url}
-              title={video.snippet.title}
-              channelTitle={video.snippet.channelTitle}
-            />
+            <SuggestionCard video={video} key={index} onChange={onChange} />
           );
         })}
       </Suggestion>

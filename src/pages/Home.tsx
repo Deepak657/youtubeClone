@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import HomeCard from "../components/Cards/HomeCard";
 import { TabList } from "../Util";
 import TabCard from "../components/Cards/TabCard";
 // import Carousel from "nuka-carousel";
 import { fetchVideo } from "../services/YoutubeService";
-export interface IProps {
+export interface IHomeCard {
   id: {
     videoId: string;
   };
@@ -23,12 +23,12 @@ export interface IProps {
     };
   };
 }
-interface Ititle {
+export interface Ititle {
   onChange: (value: string) => void;
 }
 
 const Home = ({ onChange }: Ititle) => {
-  const [homeVideos, setHomeVideos] = useState<IProps[]>([]);
+  const [homeVideos, setHomeVideos] = useState<IHomeCard[]>([]);
   const [results, setResults] = useState(10);
   const [term, setTerm] = useState("All");
   const handleScroll = () => {
@@ -39,23 +39,23 @@ const Home = ({ onChange }: Ititle) => {
       setResults((prev) => prev + 10);
     }
   };
+  const getVideo = useCallback(async () => {
+    try {
+      const video = await fetchVideo({ results, term });
+      setHomeVideos(video);
+      // console.log(video);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [results, term]);
 
   useEffect(() => {
-    const getVideo = async () => {
-      try {
-        const video = await fetchVideo({ results, term });
-        setHomeVideos(video);
-        // console.log(video);
-      } catch (err) {
-        console.error(err);
-      }
-    };
     getVideo();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [results, term]);
+  }, [getVideo]);
 
   return (
     <Wrapper>
@@ -71,18 +71,8 @@ const Home = ({ onChange }: Ititle) => {
         })}
       </TabWrapper>
       <HomeCardWrapper>
-        {homeVideos.map((video) => {
-          return (
-            <HomeCard
-              key={video.id.videoId}
-              image={video.snippet.thumbnails.high.url}
-              id={video.id.videoId}
-              title={video.snippet.title}
-              channelTitle={video.snippet.channelTitle}
-              publishedAt={video.snippet.publishedAt}
-              onChange={onChange}
-            />
-          );
+        {homeVideos.map((video: IHomeCard, index) => {
+          return <HomeCard video={video} key={index} onChange={onChange} />;
         })}
       </HomeCardWrapper>
     </Wrapper>

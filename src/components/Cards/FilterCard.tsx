@@ -3,7 +3,10 @@ import { Duration, Features, SortBy, Type, UploadDate } from "../../Util";
 import styled from "styled-components";
 import { theme } from "../../Theme";
 
-const FilterCard = () => {
+interface Iprops {
+  onChange: (value: string) => void;
+}
+const FilterCard = ({ onChange }: Iprops) => {
   return (
     <FilterCardWrapper>
       <FilterSection>
@@ -15,7 +18,11 @@ const FilterCard = () => {
       <FilterSection>
         <P>TYPE</P>
         {Type.map((text) => {
-          return <Tab key={text.id}>{text.tab}</Tab>;
+          return (
+            <Tab onClick={() => onChange(text.tab)} key={text.id}>
+              {text.tab}
+            </Tab>
+          );
         })}
       </FilterSection>
       <FilterSection>

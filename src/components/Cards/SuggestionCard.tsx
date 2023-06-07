@@ -4,25 +4,33 @@ import { Views } from "./HomeCard";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../../Theme";
+import { IHomeCard } from "../../pages/Home";
 
 interface Iprops {
-  id: string;
-  image: string;
-  title: string;
-  channelTitle: string;
+  video: IHomeCard;
+  onChange: (value: string) => void;
 }
 
-const SuggestionCard = (props: Iprops) => {
-  const { id, image, title, channelTitle } = props;
+const SuggestionCard = ({ video, onChange }: Iprops) => {
+  const { id, snippet } = video;
+  const { channelTitle, thumbnails, title } = snippet;
   const navigate = useNavigate();
+  const handleImage = (id: string, title: string) => {
+    navigate(`/video/${id}`);
+    onChange(title);
+  };
   return (
     <SuggestionCardWrapper>
-      <Image src={image} alt="" onClick={() => navigate(`/video/${id}`)} />
+      <Image
+        src={thumbnails.high.url}
+        alt=""
+        onClick={() => handleImage(id.videoId, title)}
+      />
       <Genric>
         <Title>{title}</Title>
         <ChannelTitle>{channelTitle}</ChannelTitle>
         <Views>
-          1.1M Views{" "}
+          {Math.floor(Math.random() * 100 + 1)}M Views{" "}
           <span>
             <BsDot />
           </span>

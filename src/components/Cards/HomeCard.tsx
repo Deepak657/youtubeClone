@@ -3,18 +3,16 @@ import { BsThreeDotsVertical, BsDot } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { theme } from "../../Theme";
+import { IHomeCard } from "../../pages/Home";
 
 interface Iprops {
-  image: string;
-  id: string;
-  title: string;
-  channelTitle: string;
-  publishedAt: String;
+  video: IHomeCard;
   onChange: (value: string) => void;
 }
 
-const HomeCard = (video: Iprops) => {
-  const { image, id, title, channelTitle, publishedAt, onChange } = video;
+const HomeCard = ({ video, onChange }: Iprops) => {
+  const { id, snippet } = video;
+  const { channelTitle, publishedAt, thumbnails, title } = snippet;
   const navigate = useNavigate();
 
   const handleImage = (id: string, title: string) => {
@@ -23,14 +21,18 @@ const HomeCard = (video: Iprops) => {
   };
   return (
     <HomeCardStyle>
-      <Image src={image} alt="" onClick={() => handleImage(id, title)} />
+      <Image
+        src={thumbnails.high.url}
+        alt=""
+        onClick={() => handleImage(id.videoId, title)}
+      />
       <Details>
-        <DetailImage src={image} alt="" />
+        <DetailImage src={thumbnails.high.url} alt="" />
         <TitleWrapper>
           <Title>{title}</Title>
           <ChannelTitle>{channelTitle}</ChannelTitle>
           <Views>
-            1.1M Views{" "}
+            {Math.floor(Math.random() * 100 + 1)}M Views{" "}
             <span>
               <BsDot />
             </span>

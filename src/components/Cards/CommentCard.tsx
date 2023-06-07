@@ -1,23 +1,23 @@
 import React from "react";
 import styled from "styled-components";
 import { theme } from "../../Theme";
+import { Icomment } from "../../pages/Watch";
 
 interface Iprops {
-  image: string;
-  auther: string;
-  discription: string;
+  comment: Icomment;
 }
-const CommentCard = (props: Iprops) => {
-  const { image, auther, discription } = props;
+const CommentCard = ({ comment }: Iprops) => {
+  const { authorDisplayName, authorProfileImageUrl, textDisplay } =
+    comment.snippet.topLevelComment.snippet;
   return (
     <CommentCardWrapper>
-      <Image src={image} alt="" />
+      <Image src={authorProfileImageUrl} alt="" />
       <div>
         <Auther>
-          {auther}
+          {authorDisplayName}
           <Span>2 weeks ago</Span>{" "}
         </Auther>
-        <Description>{discription}</Description>
+        <Description>{textDisplay}</Description>
       </div>
     </CommentCardWrapper>
   );

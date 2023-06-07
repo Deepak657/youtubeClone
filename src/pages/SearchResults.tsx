@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import SearchVideoCard from "../components/Cards/SearchVideoCard";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { fetchVideo } from "../services/YoutubeService";
 import { Wrapper } from "./Home";
 import FilterCard from "../components/Cards/FilterCard";
+import { Ititle } from "./Home";
+import ChannelCard from "../components/Cards/ChannelCard";
 
-interface IProps {
+export interface ISearch {
   id: {
     videoId: string;
+    channelId: string;
   };
   snippet: {
     title: string;
@@ -26,9 +29,10 @@ interface IProps {
   };
 }
 
-const SearchResults = () => {
+const SearchResults = ({ onChange }: Ititle) => {
   const { q } = useParams();
-  const [searchVideos, setSearchVideos] = useState<IProps[]>([]);
+  const [tab, setTab] = useState("");
+  const [searchVideos, setSearchVideos] = useState<ISearch[]>([]);
   const [results, setResults] = useState(10);
   const handleScroll = () => {
     if (
@@ -38,41 +42,49 @@ const SearchResults = () => {
       setResults((prev) => prev + 10);
     }
   };
-  useEffect(() => {
-    const fetchResults = async () => {
-      try {
-        if (q) {
-          const res = await fetchVideo({ results, term: q });
-          setSearchVideos(res);
-          console.log(res);
-        }
-      } catch (err) {
-        console.error(err);
+  const fetchResults = useCallback(async () => {
+    try {
+      if (q) {
+        const res = await fetchVideo({ results, term: q, tab });
+        setSearchVideos(res);
+        // console.log(res);
       }
-    };
+    } catch (err) {
+      console.error(err);
+    }
+  }, [results, q, tab]);
+
+  useEffect(() => {
     fetchResults();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [results, q]);
+  }, [fetchResults]);
 
   return (
     <Wrapper>
-      <FilterCard />
+      <FilterCard onChange={(value: string) => setTab(value)} />
+
       <SearchResultsWrapper>
-        {searchVideos.map((video) => {
+        {tab === "Channel"
+          ? searchVideos.map((channel: ISearch, index) => {
+              return <ChannelCard key={index} channel={channel} />;
+            })
+          : searchVideos.map((video: ISearch, index) => {
+              return (
+                <SearchVideoCard
+                  key={index}
+                  video={video}
+                  onChange={onChange}
+                />
+              );
+            })}
+        {/* {searchVideos.map((video: ISearch, index) => {
           return (
-            <SearchVideoCard
-              key={video.id.videoId}
-              id={video.id.videoId}
-              image={video.snippet.thumbnails.high.url}
-              title={video.snippet.title}
-              channelTitle={video.snippet.channelTitle}
-              description={video.snippet.description}
-            />
+            <SearchVideoCard key={index} video={video} onChange={onChange} />
           );
-        })}
+        })} */}
       </SearchResultsWrapper>
     </Wrapper>
   );
@@ -81,7 +93,7 @@ const SearchResults = () => {
 const SearchResultsWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 30px;
 `;
 
