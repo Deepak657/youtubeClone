@@ -126,6 +126,7 @@ const BsThreeDots2 = styled(BsThreeDots)`
   color: ${theme.color.white};
 `;
 const LikeDisLike = styled.div`
+  padding: 15px;
   display: flex;
   gap: 10px;
   align-items: center;
