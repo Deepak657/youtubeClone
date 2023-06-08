@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { BsThreeDotsVertical, BsDot } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { theme } from "../../Theme";
 import { IHomeCard } from "../../pages/Home";
+import { fetchWatchVideoChannel } from "../../services/YoutubeService";
+import { useNavigate } from "react-router-dom";
 
 interface Iprops {
   video: IHomeCard;
@@ -11,23 +12,46 @@ interface Iprops {
 }
 
 const HomeCard = ({ video, onChange }: Iprops) => {
+  const [channelId, setChannelId] = useState("");
+  const [imgUrl, setImgUrl] = useState("");
   const { id, snippet } = video;
   const { channelTitle, publishedAt, thumbnails, title } = snippet;
   const navigate = useNavigate();
-
-  const handleImage = (id: string, title: string) => {
-    navigate(`/video/${id}`);
+  const handleImage = (title: string) => {
     onChange(title);
   };
+
+  const getVideoChannel = useCallback(async () => {
+    if (!id) {
+      return;
+    }
+    try {
+      const res = await fetchWatchVideoChannel(id.videoId);
+      const { channelId, thumbnails } = res;
+      setChannelId(channelId);
+      setImgUrl(thumbnails.high.url);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    getVideoChannel();
+  }, [getVideoChannel]);
+
   return (
-    <HomeCardStyle>
+    <HomeCardStyle onClick={() => navigate(`/video/${id.videoId}`)}>
       <Image
         src={thumbnails.high.url}
         alt=""
-        onClick={() => handleImage(id.videoId, title)}
+        onClick={() => handleImage(title)}
       />
       <Details>
-        <DetailImage src={thumbnails.high.url} alt="" />
+        <ChannelImage
+          src={imgUrl}
+          alt=""
+          onClick={() => navigate(`/channel/${channelId}`)}
+        />
         <TitleWrapper>
           <Title>{title}</Title>
           <ChannelTitle>{channelTitle}</ChannelTitle>
@@ -88,7 +112,7 @@ const Details = styled.div`
   flex-wrap: wrap;
 `;
 
-const DetailImage = styled.img`
+const ChannelImage = styled.img`
   width: 40px;
   height: 40px;
   object-fit: cover;

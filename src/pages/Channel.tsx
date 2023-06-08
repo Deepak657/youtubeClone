@@ -3,8 +3,7 @@ import ChannelCard from "../components/Cards/ChannelCard";
 import ChannelNavbar from "../components/Header/ChannelNavbar";
 import { Outlet, useParams } from "react-router-dom";
 import { Wrapper } from "./Home";
-import { fetchChannel, fetchPlayList } from "../services/YoutubeService";
-import { log } from "console";
+import { fetchChannel } from "../services/YoutubeService";
 import { ISearch } from "./SearchResults";
 
 const Channel = () => {
@@ -57,10 +56,6 @@ const Channel = () => {
           },
         },
       });
-
-      const { uploads } = channel.contentDetails.relatedPlaylists;
-      const playList = await fetchPlayList(uploads);
-      console.log(playList);
     } catch (er) {
       console.log(er);
     }

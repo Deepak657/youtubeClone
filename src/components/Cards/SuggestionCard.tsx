@@ -12,19 +12,19 @@ interface Iprops {
 }
 
 const SuggestionCard = ({ video, onChange }: Iprops) => {
-  const { id, snippet } = video;
-  const { channelTitle, thumbnails, title } = snippet;
   const navigate = useNavigate();
-  const handleImage = (id: string, title: string) => {
-    navigate(`/video/${id}`);
+  const { channelTitle, thumbnails, title } = video.snippet;
+  const handleImage = (title: string) => {
     onChange(title);
   };
   return (
-    <SuggestionCardWrapper>
+    <SuggestionCardWrapper
+      onClick={() => navigate(`/video/${video.id.videoId}`)}
+    >
       <Image
         src={thumbnails.high.url}
         alt=""
-        onClick={() => handleImage(id.videoId, title)}
+        onClick={() => handleImage(title)}
       />
       <Genric>
         <Title>{title}</Title>

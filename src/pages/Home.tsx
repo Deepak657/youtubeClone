@@ -31,6 +31,7 @@ const Home = ({ onChange }: Ititle) => {
   const [homeVideos, setHomeVideos] = useState<IHomeCard[]>([]);
   const [results, setResults] = useState(10);
   const [term, setTerm] = useState("All");
+
   const handleScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 1 >=
@@ -43,7 +44,6 @@ const Home = ({ onChange }: Ititle) => {
     try {
       const video = await fetchVideo({ results, term });
       setHomeVideos(video);
-      // console.log(video);
     } catch (err) {
       console.error(err);
     }
