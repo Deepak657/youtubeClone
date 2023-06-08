@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { BsDot } from "react-icons/bs";
 import { Views } from "./HomeCard";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../../Theme";
 import { ISearch } from "../../pages/SearchResults";
+import {
+  convertToRelativeTime,
+  fetchWatchVideoChannel,
+} from "../../services/YoutubeService";
 
 interface Iprops {
   video: ISearch;
@@ -12,13 +16,33 @@ interface Iprops {
 }
 
 const SearchVideoCard = ({ video, onChange }: Iprops) => {
+  const [channelId, setChannelId] = useState("");
+
   const { id, snippet } = video;
-  const { channelTitle, description, thumbnails, title } = snippet;
+  const { channelTitle, description, thumbnails, title, publishedAt } = snippet;
   const navigate = useNavigate();
   const handleImage = (id: string, title: string) => {
     navigate(`/video/${id}`);
     onChange(title);
   };
+
+  const getVideoChannel = useCallback(async () => {
+    if (!id) {
+      return;
+    }
+    try {
+      const res = await fetchWatchVideoChannel(id.videoId);
+      const { channelId } = res;
+      setChannelId(channelId);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    getVideoChannel();
+  }, [getVideoChannel]);
+
   return (
     <SearchVideoCardWrapper>
       <Image
@@ -27,19 +51,21 @@ const SearchVideoCard = ({ video, onChange }: Iprops) => {
         onClick={() => handleImage(id.videoId, title)}
       />
       <Genric>
-        <Title>{title}</Title>
+        <Title onClick={() => handleImage(id.videoId, title)}>{title}</Title>
         <Views>
           {Math.floor(Math.random() * 100 + 1)}M Views{" "}
           <span>
             <BsDot />
           </span>
-          5 days ago
+          {convertToRelativeTime(publishedAt)}
         </Views>
-        <ChannelTitleWrapper>
+        <ChannelTitleWrapper onClick={() => navigate(`/channel/${channelId}`)}>
           <ImageChannel src={thumbnails.high.url} alt="" />
           <ChannelTitle>{channelTitle}</ChannelTitle>
         </ChannelTitleWrapper>
-        <Description>{description}</Description>
+        <Description onClick={() => handleImage(id.videoId, title)}>
+          {description}
+        </Description>
         {/* <div>
           <div>New</div>
           <div>4k</div>
@@ -81,20 +107,21 @@ const Description = styled.div`
 `;
 const Image = styled.img`
   width: 360px;
-  height: 200px;
+  height: auto;
   object-fit: cover;
-  border-radius: 20px;
-  cursor: pointer;
+  border-radius: 14px;
 `;
 
 const Genric = styled.div`
   max-width: 100%;
+  align-items: start;
 `;
 
 const SearchVideoCardWrapper = styled.div`
   max-width: 1100px;
   display: flex;
-  align-items: flex-start;
   gap: 20px;
+  height: 200px;
+  cursor: pointer;
 `;
 export default SearchVideoCard;

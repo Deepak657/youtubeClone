@@ -42,8 +42,14 @@ function App() {
         <Route path="channel/:channelId?" element={<Channel />}>
           <Route index element={<ChannelsHome />} />
           <Route path="featured" element={<ChannelsHome />} />
-          <Route path="videos" element={<Videos />} />
-          <Route path="streams" element={<Live />} />
+          <Route
+            path="videos"
+            element={<Videos onChange={(value: string) => setTitle(value)} />}
+          />
+          <Route
+            path="streams"
+            element={<Live onChange={(value: string) => setTitle(value)} />}
+          />
           <Route path="playlists" element={<PlayLists />} />
           <Route path="community" element={<Community />} />
           <Route path="channels" element={<Channels />} />

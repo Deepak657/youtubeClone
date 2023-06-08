@@ -19,6 +19,8 @@ export interface Icomment {
         authorDisplayName: string;
         authorProfileImageUrl: string;
         textDisplay: string;
+        likeCount: number;
+        publishedAt: string;
       };
     };
   };
@@ -90,7 +92,7 @@ const CommentWrapper = styled.div`
 `;
 
 const WatchVideo = styled.div`
-  width: 65%;
+  width: 853px;
 `;
 const Suggestion = styled.div`
   display: flex;
@@ -103,7 +105,7 @@ const WatchWrapper = styled.div`
   margin: auto;
   display: flex;
   justify-content: center;
-  gap: 5px;
+  gap: 25px;
 `;
 
 export default Watch;

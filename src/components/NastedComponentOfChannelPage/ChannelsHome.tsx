@@ -5,7 +5,7 @@ import OtherChannelCard from "../Cards/OtherChannelCard";
 const ChannelsHome = () => {
   return (
     <>
-      <ChannelVideoCard />
+      {/* <ChannelVideoCard /> */}
       <OtherChannelCard />
     </>
   );

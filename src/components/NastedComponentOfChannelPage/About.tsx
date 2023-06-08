@@ -1,28 +1,55 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { BsFlag } from "react-icons/bs";
 import { BiShare } from "react-icons/bi";
 import styled from "styled-components";
 import { theme } from "../../Theme";
+import {
+  convertToRelativeTime,
+  fetchChannel,
+} from "../../services/YoutubeService";
+import { useParams } from "react-router-dom";
 
 const About = () => {
+  const { channelId } = useParams();
+  const [country, setCountry] = useState("");
+  const [description, setDescription] = useState("");
+  const [publishedAt, setPublishedAt] = useState("");
+  const [viewCount, setViewCount] = useState("");
+
+  const getChannel = useCallback(async () => {
+    if (!channelId) {
+      return;
+    }
+    try {
+      const channel = await fetchChannel(channelId);
+      const { country, description, publishedAt } = channel.snippet;
+      const { viewCount } = channel.statistics;
+      setCountry(country);
+      setDescription(description);
+      setPublishedAt(publishedAt);
+      setViewCount(viewCount);
+      // console.log(channel);
+    } catch (er) {
+      console.log(er);
+    }
+  }, [channelId]);
+  useEffect(() => {
+    getChannel();
+  }, [getChannel]);
   return (
     <AboutWrapper>
       <DescriptionDetailsWrapper>
         <Title>Description</Title>
-        <Description>
-          Welcome to my gaming channel. It's a small start but a long journey.
-          Hope you all will give love to this one and with all your blessings
-          and my efforts we will rise together. Enjoy!
-        </Description>
+        <Description>{description}</Description>
         <Title>Details</Title>
         <Details>
-          Location: <span>India</span>
+          Location: <span>{country}</span>
         </Details>
       </DescriptionDetailsWrapper>
       <StatsWrapper>
         <Stats>Stats</Stats>
-        <Stats>joined 3 Nov 2020</Stats>
-        <Stats>1,802 views</Stats>
+        <Stats>joined {convertToRelativeTime(publishedAt)}</Stats>
+        <Stats>{viewCount} views</Stats>
         <Icon>
           <BsFlag />
           <BiShare />

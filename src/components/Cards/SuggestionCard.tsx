@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../../Theme";
 import { IHomeCard } from "../../pages/Home";
+import { convertToRelativeTime } from "../../services/YoutubeService";
 
 interface Iprops {
   video: IHomeCard;
@@ -13,10 +14,11 @@ interface Iprops {
 
 const SuggestionCard = ({ video, onChange }: Iprops) => {
   const navigate = useNavigate();
-  const { channelTitle, thumbnails, title } = video.snippet;
+  const { channelTitle, thumbnails, title, publishedAt } = video.snippet;
   const handleImage = (title: string) => {
     onChange(title);
   };
+
   return (
     <SuggestionCardWrapper
       onClick={() => navigate(`/video/${video.id.videoId}`)}
@@ -34,7 +36,7 @@ const SuggestionCard = ({ video, onChange }: Iprops) => {
           <span>
             <BsDot />
           </span>
-          5 days ago
+          {convertToRelativeTime(publishedAt)}
         </Views>
       </Genric>
     </SuggestionCardWrapper>
@@ -57,11 +59,10 @@ const Title = styled.div`
 `;
 
 const Image = styled.img`
-  width: 200px;
-  height: 100px;
+  width: 160px;
+  height: auto;
   object-fit: cover;
   border-radius: 10px;
-  cursor: pointer;
 `;
 
 const Genric = styled.div`
@@ -71,7 +72,9 @@ const Genric = styled.div`
 const SuggestionCardWrapper = styled.div`
   width: 380px;
   display: flex;
-  align-items: flex-start;
+  /* align-items: flex-start; */
   gap: 10px;
+  cursor: pointer;
+  height: 90px;
 `;
 export default SuggestionCard;

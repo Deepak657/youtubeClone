@@ -157,18 +157,18 @@ export const Features: Itab[] = [
 export const SortBy: Itab[] = [
   {
     id: 1,
-    tab: "Relevance",
+    tab: "relevance",
   },
   {
     id: 2,
-    tab: "Upload date",
+    tab: "date",
   },
   {
     id: 3,
-    tab: "View count",
+    tab: "viewCount",
   },
   {
     id: 4,
-    tab: "Rating",
+    tab: "rating",
   },
 ];

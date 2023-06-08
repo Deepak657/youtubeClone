@@ -1,12 +1,23 @@
 import axios from "axios";
 import { BaseUrl, YouTubeApiKey } from "../Const";
+import moment from "moment";
 
 interface Iprops {
   results: number;
   term?: string;
   tab?: string;
+  orderType?: string;
+  channelId?: string;
+  eventType?: string;
 }
-export const fetchVideo = async ({ results, term, tab }: Iprops) => {
+export const fetchVideo = async ({
+  results,
+  term,
+  tab,
+  orderType,
+  channelId,
+  eventType,
+}: Iprops) => {
   try {
     const res = await axios.get(`${BaseUrl}/search`, {
       params: {
@@ -16,6 +27,9 @@ export const fetchVideo = async ({ results, term, tab }: Iprops) => {
         key: YouTubeApiKey,
         q: term,
         type: tab,
+        order: orderType,
+        channelId: channelId,
+        eventType: eventType,
       },
     });
     return res.data.items;
@@ -83,4 +97,10 @@ export const fetchWatchVideoChannel = async (id: string) => {
   } catch (err) {
     return err;
   }
+};
+
+export const convertToRelativeTime = (timestamp: string): string => {
+  const now = moment();
+  const relativeTime = moment(timestamp).from(now);
+  return relativeTime;
 };

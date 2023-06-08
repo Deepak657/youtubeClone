@@ -3,7 +3,10 @@ import { BsThreeDotsVertical, BsDot } from "react-icons/bs";
 import styled from "styled-components";
 import { theme } from "../../Theme";
 import { IHomeCard } from "../../pages/Home";
-import { fetchWatchVideoChannel } from "../../services/YoutubeService";
+import {
+  convertToRelativeTime,
+  fetchWatchVideoChannel,
+} from "../../services/YoutubeService";
 import { useNavigate } from "react-router-dom";
 
 interface Iprops {
@@ -13,11 +16,11 @@ interface Iprops {
 
 const HomeCard = ({ video, onChange }: Iprops) => {
   const [channelId, setChannelId] = useState("");
-  const [imgUrl, setImgUrl] = useState("");
   const { id, snippet } = video;
   const { channelTitle, publishedAt, thumbnails, title } = snippet;
   const navigate = useNavigate();
-  const handleImage = (title: string) => {
+  const handleImage = (videoId: string, title: string) => {
+    navigate(`/video/${videoId}`);
     onChange(title);
   };
 
@@ -27,9 +30,8 @@ const HomeCard = ({ video, onChange }: Iprops) => {
     }
     try {
       const res = await fetchWatchVideoChannel(id.videoId);
-      const { channelId, thumbnails } = res;
+      const { channelId } = res;
       setChannelId(channelId);
-      setImgUrl(thumbnails.high.url);
     } catch (err) {
       console.error(err);
     }
@@ -40,19 +42,21 @@ const HomeCard = ({ video, onChange }: Iprops) => {
   }, [getVideoChannel]);
 
   return (
-    <HomeCardStyle onClick={() => navigate(`/video/${id.videoId}`)}>
+    <HomeCardStyle>
       <Image
         src={thumbnails.high.url}
         alt=""
-        onClick={() => handleImage(title)}
+        onClick={() => {
+          handleImage(id.videoId, title);
+        }}
       />
       <Details>
         <ChannelImage
-          src={imgUrl}
+          src={thumbnails.high.url}
           alt=""
           onClick={() => navigate(`/channel/${channelId}`)}
         />
-        <TitleWrapper>
+        <TitleWrapper onClick={() => handleImage(id.videoId, title)}>
           <Title>{title}</Title>
           <ChannelTitle>{channelTitle}</ChannelTitle>
           <Views>
@@ -60,7 +64,7 @@ const HomeCard = ({ video, onChange }: Iprops) => {
             <span>
               <BsDot />
             </span>
-            {publishedAt}
+            {convertToRelativeTime(publishedAt)}
           </Views>
         </TitleWrapper>
         <Menu>
@@ -78,11 +82,11 @@ export const Views = styled.div`
   color: ${theme.color.lightwhite};
   font-size: 16px;
 `;
-const TitleWrapper = styled.div`
+export const TitleWrapper = styled.div`
   width: 285px;
 `;
 
-const Title = styled.div`
+export const Title = styled.div`
   width: 100%;
   line-height: 1.5;
   font-size: 15px;
@@ -92,18 +96,19 @@ const Title = styled.div`
   overflow: hidden;
   color: ${theme.color.white};
 `;
-const ChannelTitle = styled.div`
+export const ChannelTitle = styled.div`
   color: ${theme.color.lightwhite};
 
   font-size: 16px;
   margin: 6px 0 3px;
 `;
 
-const HomeCardStyle = styled.div`
+export const HomeCardStyle = styled.div`
   width: 380px;
   padding-bottom: 20px;
+  cursor: pointer;
 `;
-const Details = styled.div`
+export const Details = styled.div`
   margin-top: 10px;
   display: flex;
   justify-content: space-between;
@@ -112,21 +117,20 @@ const Details = styled.div`
   flex-wrap: wrap;
 `;
 
-const ChannelImage = styled.img`
+export const ChannelImage = styled.img`
   width: 40px;
   height: 40px;
   object-fit: cover;
   border-radius: 50%;
 `;
-const Image = styled.img`
+export const Image = styled.img`
   width: 100%;
   height: 200px;
   object-fit: cover;
   border-radius: 10px;
-  cursor: pointer;
 `;
 
-const Menu = styled.div`
+export const Menu = styled.div`
   color: ${theme.color.white};
   font-size: 18px;
 `;

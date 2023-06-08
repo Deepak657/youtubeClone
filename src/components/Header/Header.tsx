@@ -19,7 +19,7 @@ const Header = () => {
     <Navbar>
       <LogoWrapper>
         <AiOutlineMenu2 />
-        <Logo>
+        <Logo onClick={() => navigate("/")}>
           <FcStart /> YouTube
         </Logo>
       </LogoWrapper>

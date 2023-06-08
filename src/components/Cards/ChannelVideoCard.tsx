@@ -5,15 +5,27 @@ import { BsThreeDotsVertical, BsDot } from "react-icons/bs";
 import { theme } from "../../Theme";
 import { Views } from "./HomeCard";
 import { Image } from "./PlayListCard";
-const ChannelVideoCard = () => {
+import { IChannelVideos } from "../NastedComponentOfChannelPage/Videos";
+import { useNavigate } from "react-router-dom";
+import { convertToRelativeTime } from "../../services/YoutubeService";
+
+interface Iprops {
+  video: IChannelVideos;
+  onChange: (value: string) => void;
+}
+const ChannelVideoCard = ({ video, onChange }: Iprops) => {
+  const navigate = useNavigate();
+  const { id, snippet } = video;
+  const { title, publishedAt, thumbnails } = snippet;
+  const handleChange = (id: string, title: string) => {
+    navigate(`/video/${id}`);
+    onChange(title);
+  };
   return (
-    <ChannelVideoCardWrapper>
-      <Image
-        src="https://i.ytimg.com/vi/1VK9yV9rWb4/hqdefault.jpg?sqp=-oaymwEjCNACELwBSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLCjtjS1ZTV-I2sBt3Cr6rYGTkCOcg"
-        alt=""
-      />
+    <ChannelVideoCardWrapper onClick={() => handleChange(id.videoId, title)}>
+      <Image src={thumbnails.high.url} alt="" />
       <TitleWrapper>
-        <Title>With Love by Faris REACTION | Ashmita Reacts</Title>
+        <Title>{title}</Title>
         <BsThreeDotsVertical2 />
       </TitleWrapper>
       <Views>
@@ -21,7 +33,7 @@ const ChannelVideoCard = () => {
         <span>
           <BsDot />
         </span>
-        2 days age
+        {convertToRelativeTime(publishedAt)}
       </Views>
     </ChannelVideoCardWrapper>
   );
@@ -29,6 +41,7 @@ const ChannelVideoCard = () => {
 
 const ChannelVideoCardWrapper = styled.div`
   width: 300px;
+  cursor: pointer;
 `;
 
 export const BsThreeDotsVertical2 = styled(BsThreeDotsVertical)`

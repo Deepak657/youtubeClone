@@ -5,6 +5,7 @@ import { TabList } from "../Util";
 import TabCard from "../components/Cards/TabCard";
 // import Carousel from "nuka-carousel";
 import { fetchVideo } from "../services/YoutubeService";
+import SkeletonCard from "../components/Cards/SkeletonCard";
 export interface IHomeCard {
   id: {
     videoId: string;
@@ -31,6 +32,7 @@ const Home = ({ onChange }: Ititle) => {
   const [homeVideos, setHomeVideos] = useState<IHomeCard[]>([]);
   const [results, setResults] = useState(10);
   const [term, setTerm] = useState("All");
+  const [loading, setLoading] = useState(true);
 
   const handleScroll = () => {
     if (
@@ -44,6 +46,7 @@ const Home = ({ onChange }: Ititle) => {
     try {
       const video = await fetchVideo({ results, term });
       setHomeVideos(video);
+      setLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -60,6 +63,7 @@ const Home = ({ onChange }: Ititle) => {
   return (
     <Wrapper>
       <TabWrapper>
+        {loading && <SkeletonCard />}
         {TabList.map((text) => {
           return (
             <TabCard

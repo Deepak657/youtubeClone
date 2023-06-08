@@ -64,10 +64,10 @@ const VIdeoPlay = ({ id }: Iprops) => {
         </ChannelWrapper>
         <IconWrapper>
           <LikeDisLike>
-            <Span>
+            <Like>
               <BiLike />
               {Math.floor(Math.random() * 100 + 1)}
-            </Span>
+            </Like>
             <BiDislike />
           </LikeDisLike>
           <Span>
@@ -103,6 +103,13 @@ const ChannelTitle = styled.p`
   font-size: 14px;
   color: ${theme.color.white};
 `;
+const Like = styled.span`
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding-right: 14px;
+  border-right: 1px solid ${theme.color.lightwhite};
+`;
 const Subscribers = styled.p`
   font-size: 12px;
   color: ${theme.color.lightwhite};
@@ -119,16 +126,17 @@ const IconWrapper = styled.div`
   align-items: center;
 `;
 const BsThreeDots2 = styled(BsThreeDots)`
-  font-size: 44px;
-  padding: 12px;
+  font-size: 36px;
+  padding: 8px;
   border-radius: 50%;
   background: ${theme.color.lightblack};
   color: ${theme.color.white};
 `;
 const LikeDisLike = styled.div`
-  padding: 15px;
+  padding: 8px 16px;
+
   display: flex;
-  gap: 10px;
+  gap: 14px;
   align-items: center;
   border-radius: 25px;
   background: ${theme.color.lightblack};
@@ -138,7 +146,7 @@ const Span = styled.span`
   display: flex;
   gap: 5px;
   align-items: center;
-  padding: 10px;
+  padding: 8px 16px;
   border-radius: 25px;
   background: ${theme.color.lightblack};
   color: ${theme.color.white};

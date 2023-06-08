@@ -13,13 +13,9 @@ const ChannelCard = ({ channel }: Iprops) => {
   const { id, snippet } = channel;
   const { channelTitle, description, thumbnails } = snippet;
   return (
-    <ChannelCardWrapper>
+    <ChannelCardWrapper onClick={() => navigate(`/channel/${id.channelId}`)}>
       <ImageWrapper>
-        <Image
-          src={thumbnails.high.url}
-          alt=""
-          onClick={() => navigate(`/channel/${id.channelId}`)}
-        />
+        <Image src={thumbnails.high.url} alt="" />
       </ImageWrapper>
       <TitleWrapper>
         <ChannelName>{channelTitle}</ChannelName>
@@ -55,6 +51,7 @@ const ChannelCardWrapper = styled.div`
   justify-content: center;
   gap: 20px;
   align-items: center;
+  cursor: pointer;
 `;
 const TitleWrapper = styled.div`
   width: 700px;
