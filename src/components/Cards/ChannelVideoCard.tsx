@@ -7,7 +7,7 @@ import { Views } from "./HomeCard";
 import { Image } from "./PlayListCard";
 import { IChannelVideos } from "../NastedComponentOfChannelPage/Videos";
 import { useNavigate } from "react-router-dom";
-import { convertToRelativeTime } from "../../services/YoutubeService";
+import moment from "moment";
 
 interface Iprops {
   video: IChannelVideos;
@@ -33,7 +33,7 @@ const ChannelVideoCard = ({ video, onChange }: Iprops) => {
         <span>
           <BsDot />
         </span>
-        {convertToRelativeTime(publishedAt)}
+        {moment(publishedAt).fromNow()}
       </Views>
     </ChannelVideoCardWrapper>
   );

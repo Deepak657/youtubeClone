@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ChannelVideoCard from "../Cards/ChannelVideoCard";
-import { fetchVideo } from "../../services/YoutubeService";
+import { fetchVideos } from "../../services/YoutubeService";
 import { useParams } from "react-router-dom";
 import { VideosWrapper } from "./Videos";
 
@@ -39,10 +39,10 @@ const Live = ({ onChange }: Iprops) => {
       return;
     }
     try {
-      const video = await fetchVideo({
+      const video = await fetchVideos({
         results,
         channelId,
-        tab: "video",
+        type: "video",
         eventType: "live",
       });
       // setChannelVideos(video);

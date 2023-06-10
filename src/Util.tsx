@@ -79,33 +79,37 @@ export const UploadDate: Itab[] = [
 export const Type: Itab[] = [
   {
     id: 1,
-    tab: "Video",
+    tab: "video",
   },
   {
     id: 2,
-    tab: "Channel",
+    tab: "channel",
   },
   {
     id: 3,
-    tab: "Playlist",
+    tab: "playlist",
   },
   {
     id: 4,
-    tab: "Film",
+    tab: "movie",
   },
 ];
 export const Duration: Itab[] = [
   {
     id: 1,
-    tab: "Under 4 minutes",
+    tab: "any",
   },
   {
     id: 2,
-    tab: "4–20 minutes",
+    tab: "long",
   },
   {
     id: 3,
-    tab: "Over 20 minutes",
+    tab: "medium",
+  },
+  {
+    id: 4,
+    tab: "short",
   },
 ];
 export const Features: Itab[] = [
@@ -170,5 +174,24 @@ export const SortBy: Itab[] = [
   {
     id: 4,
     tab: "rating",
+  },
+];
+
+interface IVideoFilter {
+  id: number;
+  display: string;
+  value: string;
+}
+
+export const videoFilter: IVideoFilter[] = [
+  {
+    id: 1,
+    display: "Latest",
+    value: "date",
+  },
+  {
+    id: 2,
+    display: "Popular",
+    value: "viewCount",
   },
 ];

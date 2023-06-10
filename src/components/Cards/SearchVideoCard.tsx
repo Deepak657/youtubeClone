@@ -5,10 +5,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../../Theme";
 import { ISearch } from "../../pages/SearchResults";
-import {
-  convertToRelativeTime,
-  fetchWatchVideoChannel,
-} from "../../services/YoutubeService";
+import { fetchChannel } from "../../services/YoutubeService";
+import moment from "moment";
 
 interface Iprops {
   video: ISearch;
@@ -16,32 +14,37 @@ interface Iprops {
 }
 
 const SearchVideoCard = ({ video, onChange }: Iprops) => {
-  const [channelId, setChannelId] = useState("");
-
   const { id, snippet } = video;
-  const { channelTitle, description, thumbnails, title, publishedAt } = snippet;
+  const {
+    channelTitle,
+    description,
+    thumbnails,
+    title,
+    publishedAt,
+    channelId,
+  } = snippet;
+  const [channelImg, setChannelImg] = useState("");
+
   const navigate = useNavigate();
   const handleImage = (id: string, title: string) => {
     navigate(`/video/${id}`);
     onChange(title);
   };
 
-  const getVideoChannel = useCallback(async () => {
-    if (!id) {
-      return;
-    }
+  const getChannel = useCallback(async () => {
     try {
-      const res = await fetchWatchVideoChannel(id.videoId);
-      const { channelId } = res;
-      setChannelId(channelId);
+      const channel = await fetchChannel(channelId);
+      const { thumbnails } = channel.snippet;
+      setChannelImg(thumbnails.default.url);
+      // console.log(channel);
     } catch (err) {
       console.error(err);
     }
-  }, [id]);
+  }, [channelId]);
 
   useEffect(() => {
-    getVideoChannel();
-  }, [getVideoChannel]);
+    getChannel();
+  }, [getChannel]);
 
   return (
     <SearchVideoCardWrapper>
@@ -57,10 +60,10 @@ const SearchVideoCard = ({ video, onChange }: Iprops) => {
           <span>
             <BsDot />
           </span>
-          {convertToRelativeTime(publishedAt)}
+          {moment(publishedAt).fromNow()}
         </Views>
         <ChannelTitleWrapper onClick={() => navigate(`/channel/${channelId}`)}>
-          <ImageChannel src={thumbnails.high.url} alt="" />
+          <ImageChannel src={channelImg} alt="" />
           <ChannelTitle>{channelTitle}</ChannelTitle>
         </ChannelTitleWrapper>
         <Description onClick={() => handleImage(id.videoId, title)}>

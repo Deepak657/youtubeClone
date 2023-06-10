@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../../Theme";
 import { IHomeCard } from "../../pages/Home";
-import { convertToRelativeTime } from "../../services/YoutubeService";
+import moment from "moment";
 
 interface Iprops {
   video: IHomeCard;
@@ -36,7 +36,7 @@ const SuggestionCard = ({ video, onChange }: Iprops) => {
           <span>
             <BsDot />
           </span>
-          {convertToRelativeTime(publishedAt)}
+          {moment(publishedAt).fromNow()}
         </Views>
       </Genric>
     </SuggestionCardWrapper>

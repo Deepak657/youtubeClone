@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { theme } from "../../Theme";
 import { Icomment } from "../../pages/Watch";
 import { BiLike, BiDislike } from "react-icons/bi";
-import { convertToRelativeTime } from "../../services/YoutubeService";
+import moment from "moment";
 
 interface Iprops {
   comment: Icomment;
@@ -22,7 +22,7 @@ const CommentCard = ({ comment }: Iprops) => {
       <div>
         <Auther>
           {authorDisplayName}
-          <Span>{convertToRelativeTime(publishedAt)}</Span>
+          <Span>{moment(publishedAt).fromNow()}</Span>
         </Auther>
         <Description>{textDisplay}</Description>
         <Icon>

@@ -90,6 +90,7 @@ const ChannelIconWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   margin: 10px 0;
+  flex-wrap: wrap;
 `;
 
 const ChannelWrapper = styled.div`

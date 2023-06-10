@@ -23,6 +23,7 @@ const Nav = styled.nav`
   color: ${theme.color.lightwhite};
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   a {
     text-decoration: none;
     padding: 12px 24px;

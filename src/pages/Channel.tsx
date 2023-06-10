@@ -14,6 +14,7 @@ const Channel = () => {
       channelId: "",
     },
     snippet: {
+      channelId: "",
       title: "",
       channelTitle: "",
       description: "",
@@ -42,6 +43,7 @@ const Channel = () => {
           channelId: id,
         },
         snippet: {
+          channelId: "",
           title: "",
           channelTitle: title,
           description: description,

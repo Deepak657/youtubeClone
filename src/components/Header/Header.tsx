@@ -8,12 +8,23 @@ import { MdOutlineNotifications } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import { RxCross2 } from "react-icons/rx";
+import { theme } from "../../Theme";
 
 const Header = () => {
   const navigate = useNavigate();
+
   const [term, setTerm] = useState("");
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTerm(event.target.value);
+  };
+  const handleSubmit = (
+    event: React.FormEvent<HTMLFormElement>,
+    term: string
+  ) => {
+    event.preventDefault();
+    navigate(`/results/${term}`);
   };
   return (
     <Navbar>
@@ -24,14 +35,15 @@ const Header = () => {
         </Logo>
       </LogoWrapper>
       <SearchFieldWrapper>
-        <SearchField>
+        <SearchField onSubmit={(e) => handleSubmit(e, term)}>
           <Input
             type="text"
             placeholder="search"
             value={term}
             onChange={handleChange}
           />
-          <Button onClick={() => navigate(`/results/${term}`)}>
+          {term && <Cross onClick={() => setTerm("")} />}
+          <Button type="submit">
             <AiOutlineSearch />
           </Button>
         </SearchField>
@@ -46,10 +58,18 @@ const Header = () => {
   );
 };
 
-const SearchField = styled.div`
+const SearchField = styled.form`
   display: flex;
   align-items: center;
   width: 100%;
+`;
+
+const Cross = styled(RxCross2)`
+  cursor: pointer;
+  font-size: 25px;
+  position: relative;
+  margin-left: -30px;
+  color: ${theme.color.lightwhite};
 `;
 
 const BsMicFill2 = styled(BsMicFill)`
@@ -80,6 +100,7 @@ const Logo = styled.div`
   align-items: center;
   gap: 5px;
   font-size: 22px;
+  cursor: pointer;
 `;
 
 const Button = styled.button`

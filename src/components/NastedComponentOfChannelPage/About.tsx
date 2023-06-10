@@ -3,11 +3,9 @@ import { BsFlag } from "react-icons/bs";
 import { BiShare } from "react-icons/bi";
 import styled from "styled-components";
 import { theme } from "../../Theme";
-import {
-  convertToRelativeTime,
-  fetchChannel,
-} from "../../services/YoutubeService";
+import { fetchChannel } from "../../services/YoutubeService";
 import { useParams } from "react-router-dom";
+import moment from "moment";
 
 const About = () => {
   const { channelId } = useParams();
@@ -28,7 +26,7 @@ const About = () => {
       setDescription(description);
       setPublishedAt(publishedAt);
       setViewCount(viewCount);
-      // console.log(channel);
+      console.log(channel);
     } catch (er) {
       console.log(er);
     }
@@ -48,7 +46,7 @@ const About = () => {
       </DescriptionDetailsWrapper>
       <StatsWrapper>
         <Stats>Stats</Stats>
-        <Stats>joined {convertToRelativeTime(publishedAt)}</Stats>
+        <Stats>joined {moment(publishedAt).fromNow()}</Stats>
         <Stats>{viewCount} views</Stats>
         <Icon>
           <BsFlag />
@@ -89,6 +87,7 @@ const Title = styled.p`
 const AboutWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 `;
 const StatsWrapper = styled.div`
   width: 300px;

@@ -43,7 +43,7 @@ const Description = styled.p`
   color: ${theme.color.lightwhite};
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   overflow: hidden;
 `;
 const ChannelCardWrapper = styled.div`

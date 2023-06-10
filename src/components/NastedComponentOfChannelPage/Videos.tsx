@@ -1,13 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ChannelVideoCard from "../Cards/ChannelVideoCard";
-import {
-  fetchChannel,
-  fetchPlayList,
-  fetchVideo,
-} from "../../services/YoutubeService";
+import { fetchVideos } from "../../services/YoutubeService";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { theme } from "../../Theme";
+import { videoFilter } from "../../Util";
+import ButtonTab from "../Button/ButtonTab";
 
 export interface IChannelVideos {
   id: {
@@ -32,6 +29,7 @@ const Videos = ({ onChange }: Iprops) => {
   const [results, setResults] = useState(10);
   const [orderType, setOrderType] = useState("date");
   const [channelVideos, setChannelVideos] = useState<IChannelVideos[]>([]);
+
   const handleScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 1 >=
@@ -40,19 +38,13 @@ const Videos = ({ onChange }: Iprops) => {
       setResults((prev) => prev + 10);
     }
   };
-
   const getChannel = useCallback(async () => {
     if (!channelId) {
       return;
     }
     try {
-      // const channel = await fetchChannel(channelId);
-      // const { uploads } = channel.contentDetails.relatedPlaylists;
-      // const uploadsVideo = await fetchPlayList(uploads);
-      // console.log(uploadsVideo);
-      const video = await fetchVideo({ results, orderType, channelId });
-      setChannelVideos(video);
-      console.log(video);
+      const videos = await fetchVideos({ results, orderType, channelId });
+      setChannelVideos(videos);
     } catch (er) {
       console.log(er);
     }
@@ -67,8 +59,17 @@ const Videos = ({ onChange }: Iprops) => {
   return (
     <>
       <ButtonWrapper>
-        <Button onClick={() => setOrderType("date")}>Latest</Button>
-        <Button onClick={() => setOrderType("viewCount")}>Popular</Button>
+        {videoFilter.map((tab) => {
+          return (
+            <ButtonTab
+              key={tab.id}
+              display={tab.display}
+              value={tab.value}
+              orderType={orderType}
+              onClick={() => setOrderType(tab.value)}
+            />
+          );
+        })}
       </ButtonWrapper>
       <VideosWrapper>
         {channelVideos.map((video: IChannelVideos, index) => {
@@ -87,15 +88,6 @@ export const VideosWrapper = styled.div`
   justify-content: center;
   flex-wrap: wrap;
 `;
-const Button = styled.button`
-  background: ${theme.color.lightblack};
-  color: ${theme.color.white};
-  padding: 8px 14px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-`;
-
 const ButtonWrapper = styled.div`
   display: flex;
   gap: 15px;

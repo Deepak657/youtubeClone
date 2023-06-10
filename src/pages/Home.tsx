@@ -2,15 +2,16 @@ import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import HomeCard from "../components/Cards/HomeCard";
 import { TabList } from "../Util";
-import TabCard from "../components/Cards/TabCard";
 // import Carousel from "nuka-carousel";
-import { fetchVideo } from "../services/YoutubeService";
+import { fetchVideos } from "../services/YoutubeService";
 import SkeletonCard from "../components/Cards/SkeletonCard";
+import ButtonTab from "../components/Button/ButtonTab";
 export interface IHomeCard {
   id: {
     videoId: string;
   };
   snippet: {
+    channelId: string;
     title: string;
     channelTitle: string;
     publishedAt: string;
@@ -42,10 +43,12 @@ const Home = ({ onChange }: Ititle) => {
       setResults((prev) => prev + 10);
     }
   };
-  const getVideo = useCallback(async () => {
+  const getVideos = useCallback(async () => {
     try {
-      const video = await fetchVideo({ results, term });
-      setHomeVideos(video);
+      const videos = await fetchVideos({ results, term });
+      setHomeVideos(videos);
+      console.log(videos);
+
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -53,32 +56,39 @@ const Home = ({ onChange }: Ititle) => {
   }, [results, term]);
 
   useEffect(() => {
-    getVideo();
+    getVideos();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [getVideo]);
+  }, [getVideos]);
 
   return (
     <Wrapper>
       <TabWrapper>
-        {loading && <SkeletonCard />}
-        {TabList.map((text) => {
+        {TabList.map((tab) => {
           return (
-            <TabCard
-              key={text.id}
-              tab={text.tab}
-              onClick={() => setTerm(text.tab)}
+            <ButtonTab
+              key={tab.id}
+              display={tab.tab}
+              value={tab.tab}
+              orderType={term}
+              onClick={() => setTerm(tab.tab)}
             />
           );
         })}
       </TabWrapper>
-      <HomeCardWrapper>
-        {homeVideos.map((video: IHomeCard, index) => {
-          return <HomeCard video={video} key={index} onChange={onChange} />;
-        })}
-      </HomeCardWrapper>
+      {loading ? (
+        <HomeCardWrapper>
+          <SkeletonCard times={20} />
+        </HomeCardWrapper>
+      ) : (
+        <HomeCardWrapper>
+          {homeVideos.map((video: IHomeCard, index) => {
+            return <HomeCard video={video} key={index} onChange={onChange} />;
+          })}
+        </HomeCardWrapper>
+      )}
     </Wrapper>
   );
 };

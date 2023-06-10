@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import VIdeoPlay from "../components/VIdeoPlay";
 import SuggestionCard from "../components/Cards/SuggestionCard";
-import { fetchVideo, fetchComment } from "../services/YoutubeService";
+import { fetchComment, fetchVideos } from "../services/YoutubeService";
 import { useParams } from "react-router-dom";
 import { IHomeCard } from "./Home";
 import CommentCard from "../components/Cards/CommentCard";
@@ -45,9 +45,9 @@ const Watch = ({ term, onChange }: Iterm) => {
       return;
     }
     try {
-      const video = await fetchVideo({ results, term });
+      const videos = await fetchVideos({ results, term });
       const comment = await fetchComment(results, vId);
-      setSuggestVideos(video);
+      setSuggestVideos(videos);
       setComment(comment);
       // console.log(comment);
     } catch (err) {
@@ -89,10 +89,13 @@ const CommentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  @media (max-width: 1190px) {
+    display: none;
+  }
 `;
 
 const WatchVideo = styled.div`
-  width: 853px;
+  max-width: 853px;
 `;
 const Suggestion = styled.div`
   display: flex;
@@ -106,6 +109,7 @@ const WatchWrapper = styled.div`
   display: flex;
   justify-content: center;
   gap: 25px;
+  flex-wrap: wrap;
 `;
 
 export default Watch;

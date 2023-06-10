@@ -3,11 +3,9 @@ import { BsThreeDotsVertical, BsDot } from "react-icons/bs";
 import styled from "styled-components";
 import { theme } from "../../Theme";
 import { IHomeCard } from "../../pages/Home";
-import {
-  convertToRelativeTime,
-  fetchWatchVideoChannel,
-} from "../../services/YoutubeService";
+import { fetchChannel } from "../../services/YoutubeService";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 interface Iprops {
   video: IHomeCard;
@@ -15,31 +13,29 @@ interface Iprops {
 }
 
 const HomeCard = ({ video, onChange }: Iprops) => {
-  const [channelId, setChannelId] = useState("");
   const { id, snippet } = video;
-  const { channelTitle, publishedAt, thumbnails, title } = snippet;
+  const { channelTitle, publishedAt, thumbnails, title, channelId } = snippet;
+  const [channelImg, setChannelImg] = useState("");
   const navigate = useNavigate();
   const handleImage = (videoId: string, title: string) => {
     navigate(`/video/${videoId}`);
     onChange(title);
   };
 
-  const getVideoChannel = useCallback(async () => {
-    if (!id) {
-      return;
-    }
+  const getChannel = useCallback(async () => {
     try {
-      const res = await fetchWatchVideoChannel(id.videoId);
-      const { channelId } = res;
-      setChannelId(channelId);
+      const channel = await fetchChannel(channelId);
+      const { thumbnails } = channel.snippet;
+      setChannelImg(thumbnails.default.url);
+      // console.log(channel);
     } catch (err) {
       console.error(err);
     }
-  }, [id]);
+  }, [channelId]);
 
   useEffect(() => {
-    getVideoChannel();
-  }, [getVideoChannel]);
+    getChannel();
+  }, [getChannel]);
 
   return (
     <HomeCardStyle>
@@ -52,7 +48,7 @@ const HomeCard = ({ video, onChange }: Iprops) => {
       />
       <Details>
         <ChannelImage
-          src={thumbnails.high.url}
+          src={channelImg}
           alt=""
           onClick={() => navigate(`/channel/${channelId}`)}
         />
@@ -64,7 +60,7 @@ const HomeCard = ({ video, onChange }: Iprops) => {
             <span>
               <BsDot />
             </span>
-            {convertToRelativeTime(publishedAt)}
+            {moment(publishedAt).fromNow()}
           </Views>
         </TitleWrapper>
         <Menu>
