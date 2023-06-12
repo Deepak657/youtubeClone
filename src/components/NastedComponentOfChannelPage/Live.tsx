@@ -3,6 +3,7 @@ import ChannelVideoCard from "../Cards/ChannelVideoCard";
 import { fetchVideos } from "../../services/YoutubeService";
 import { useParams } from "react-router-dom";
 import { VideosWrapper } from "./Videos";
+import { IVideoSearchParams } from "../../interfaces/videoSearchParams";
 
 export interface IChannelVideos {
   snippet: {
@@ -34,30 +35,22 @@ const Live = ({ onChange }: Iprops) => {
     }
   };
 
-  const getChannel = useCallback(async () => {
-    if (!channelId) {
-      return;
-    }
+  const getVideos = useCallback(async (value: IVideoSearchParams) => {
     try {
-      const video = await fetchVideos({
-        results,
-        channelId,
-        type: "video",
-        eventType: "live",
-      });
+      const video = await fetchVideos(value);
       // setChannelVideos(video);
       console.log(video);
     } catch (er) {
       console.log(er);
     }
-  }, [channelId, results]);
+  }, []);
   useEffect(() => {
-    getChannel();
+    getVideos({ channelId: channelId, type: "video", eventType: "live" });
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [getChannel]);
+  }, [getVideos, channelId]);
   return (
     <>
       <VideosWrapper>

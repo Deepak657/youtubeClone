@@ -6,6 +6,7 @@ import { TabList } from "../Util";
 import { fetchVideos } from "../services/YoutubeService";
 import SkeletonCard from "../components/Cards/SkeletonCard";
 import ButtonTab from "../components/Button/ButtonTab";
+import { IVideoSearchParams } from "../interfaces/videoSearchParams";
 export interface IHomeCard {
   id: {
     videoId: string;
@@ -25,43 +26,49 @@ export interface IHomeCard {
     };
   };
 }
+
 export interface Ititle {
   onChange: (value: string) => void;
 }
 
 const Home = ({ onChange }: Ititle) => {
   const [homeVideos, setHomeVideos] = useState<IHomeCard[]>([]);
-  const [results, setResults] = useState(10);
+  const [savePageToken, setSavePageToken] = useState("");
+  const [nextPageToken, setNextPageToken] = useState("");
   const [term, setTerm] = useState("All");
   const [loading, setLoading] = useState(true);
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 1 >=
       document.documentElement.scrollHeight
     ) {
-      setResults((prev) => prev + 10);
+      setNextPageToken(savePageToken);
     }
+  }, [setNextPageToken, savePageToken]);
+  const handleClick = (value: string) => {
+    setHomeVideos([]);
+    setTerm(value);
   };
-  const getVideos = useCallback(async () => {
+  const getVideos = useCallback(async (value: IVideoSearchParams) => {
     try {
-      const videos = await fetchVideos({ results, term });
-      setHomeVideos(videos);
-      console.log(videos);
-
+      const data = await fetchVideos(value);
+      const { nextPageToken, items } = data;
+      setSavePageToken(nextPageToken);
+      setHomeVideos((prev) => [...prev, ...items]);
       setLoading(false);
     } catch (err) {
       console.error(err);
     }
-  }, [results, term]);
+  }, []);
 
   useEffect(() => {
-    getVideos();
+    getVideos({ q: term, chart: "mostPopular", pageToken: nextPageToken });
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [getVideos]);
+  }, [getVideos, term, nextPageToken, handleScroll]);
 
   return (
     <Wrapper>
@@ -73,7 +80,7 @@ const Home = ({ onChange }: Ititle) => {
               display={tab.tab}
               value={tab.tab}
               orderType={term}
-              onClick={() => setTerm(tab.tab)}
+              onClick={() => handleClick(tab.tab)}
             />
           );
         })}

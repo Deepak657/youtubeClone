@@ -6,15 +6,13 @@ import { RxCross2 } from "react-icons/rx";
 interface Iprops {
   text: string;
   onChange: (value: string) => void;
-  searchFilter: string;
+  isActive: boolean;
 }
-const SearchFilter = ({ text, onChange, searchFilter }: Iprops) => {
+const SearchFilter = ({ text, onChange, isActive }: Iprops) => {
   return (
-    <Tab flag={text === searchFilter}>
+    <Tab flag={isActive}>
       <span onClick={() => onChange(text)}>{text}</span>
-      <span onClick={() => onChange("")}>
-        {text === searchFilter && <RxCross2 />}
-      </span>
+      <span onClick={() => onChange("")}>{isActive && <RxCross2 />}</span>
     </Tab>
   );
 };

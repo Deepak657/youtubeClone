@@ -3,31 +3,19 @@ import { Duration, Features, SortBy, Type, UploadDate } from "../../Util";
 import styled from "styled-components";
 import { theme } from "../../Theme";
 import SearchFilter from "../Generic/SearchFilter";
+import { SearchParams } from "../../pages/SearchResults";
 
 interface Iprops {
-  setType: (value: string) => void;
-  type: string;
-  setUploadDate: (value: string) => void;
-  uploadDate: string;
-  setDuration: (value: string) => void;
-  duration: string;
-  setFeatures: (value: string) => void;
-  features: string;
-  setSortBy: (value: string) => void;
-  sortBy: string;
+  onFilterChange: (value: SearchParams) => void;
+  filterValues: SearchParams;
 }
-const FilterCard = ({
-  setType,
-  type,
-  setUploadDate,
-  uploadDate,
-  setDuration,
-  duration,
-  setFeatures,
-  features,
-  setSortBy,
-  sortBy,
-}: Iprops) => {
+const FilterCard = ({ onFilterChange, filterValues }: Iprops) => {
+  const onValueChange = (filed: keyof SearchParams, newValues: string) => {
+    onFilterChange({
+      ...filterValues,
+      [filed]: newValues,
+    });
+  };
   return (
     <FilterCardWrapper>
       <FilterSection>
@@ -35,10 +23,12 @@ const FilterCard = ({
         {UploadDate.map((text) => {
           return (
             <SearchFilter
-              text={text.tab}
               key={text.id}
-              onChange={setUploadDate}
-              searchFilter={uploadDate}
+              text={text.tab}
+              onChange={(newValue) => {
+                onValueChange("uploadDate", newValue);
+              }}
+              isActive={filterValues.uploadDate === text.tab}
             />
           );
         })}
@@ -50,8 +40,10 @@ const FilterCard = ({
             <SearchFilter
               text={text.tab}
               key={text.id}
-              onChange={setType}
-              searchFilter={type}
+              onChange={(newValue) => {
+                onValueChange("type", newValue);
+              }}
+              isActive={filterValues.type === text.tab}
             />
           );
         })}
@@ -63,8 +55,10 @@ const FilterCard = ({
             <SearchFilter
               text={text.tab}
               key={text.id}
-              onChange={setDuration}
-              searchFilter={duration}
+              onChange={(newValue) => {
+                onValueChange("duration", newValue);
+              }}
+              isActive={filterValues.duration === text.tab}
             />
           );
         })}
@@ -76,8 +70,10 @@ const FilterCard = ({
             <SearchFilter
               text={text.tab}
               key={text.id}
-              onChange={setFeatures}
-              searchFilter={features}
+              onChange={(newValue) => {
+                onValueChange("features", newValue);
+              }}
+              isActive={filterValues.features === text.tab}
             />
           );
         })}
@@ -89,8 +85,10 @@ const FilterCard = ({
             <SearchFilter
               text={text.tab}
               key={text.id}
-              onChange={setSortBy}
-              searchFilter={sortBy}
+              onChange={(newValue) => {
+                onValueChange("sortBy", newValue);
+              }}
+              isActive={filterValues.sortBy === text.tab}
             />
           );
         })}

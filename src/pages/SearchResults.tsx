@@ -9,6 +9,7 @@ import { Ititle } from "./Home";
 import ChannelCard from "../components/Cards/ChannelCard";
 import { AiOutlineMenuFold } from "react-icons/ai";
 import { theme } from "../Theme";
+import { IVideoSearchParams } from "../interfaces/videoSearchParams";
 
 export interface ISearch {
   id: {
@@ -31,51 +32,58 @@ export interface ISearch {
     };
   };
 }
+
+export interface SearchParams {
+  type: string;
+  uploadDate: string;
+  duration: string;
+  features: string;
+  sortBy: string;
+}
+
 const SearchResults = ({ onChange }: Ititle) => {
   const { q } = useParams();
   const [searchVideos, setSearchVideos] = useState<ISearch[]>([]);
-  const [results, setResults] = useState(10);
-  const [toggle, setToggle] = useState(false);
-  const [type, setType] = useState("");
-  const [uploadDate, setUploadDate] = useState("");
-  const [duration, setDuration] = useState("");
-  const [features, setFeatures] = useState("");
-  const [sortBy, setSortBy] = useState("");
+  const [savePageToken, setSavePageToken] = useState("");
+  const [nextPageToken, setNextPageToken] = useState("");
 
-  const handleScroll = () => {
+  const [toggle, setToggle] = useState(false);
+
+  const [filterValues, setFilterValues] = useState<SearchParams>({
+    type: "",
+    uploadDate: "",
+    duration: "",
+    features: "",
+    sortBy: "",
+  });
+
+  const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 1 >=
       document.documentElement.scrollHeight
     ) {
-      setResults((prev) => prev + 10);
+      setNextPageToken(savePageToken);
     }
-  };
-  const fetchResults = useCallback(async () => {
+  }, [setNextPageToken, savePageToken]);
+  const fetchResults = useCallback(async (value: IVideoSearchParams) => {
     try {
-      if (q) {
-        const videos = await fetchVideos({
-          results,
-          term: q,
-          type,
-        });
-        // videos.map((video: ISearch) => {
-        //   console.log(video.snippet.channelId);
-        // });
-        setSearchVideos(videos);
-        // console.log(videos);
-      }
+      const data = await fetchVideos(value);
+      const { nextPageToken, items } = data;
+      setSavePageToken(nextPageToken);
+      setSearchVideos((prev) => [...prev, ...items]);
+      // console.log(data);
     } catch (err) {
       console.error(err);
     }
-  }, [results, q, , type]);
+  }, []);
 
   useEffect(() => {
-    fetchResults();
+    fetchResults({ q: q, chart: "mostPopular", pageToken: nextPageToken });
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [fetchResults]);
+  }, [fetchResults, q, nextPageToken, handleScroll]);
 
   return (
     <Wrapper>
@@ -85,21 +93,13 @@ const SearchResults = ({ onChange }: Ititle) => {
       </FilterButton>
       {toggle && (
         <FilterCard
-          setType={(value: string) => setType(value)}
-          type={type}
-          setUploadDate={(value: string) => setUploadDate(value)}
-          uploadDate={uploadDate}
-          setDuration={(value: string) => setDuration(value)}
-          duration={duration}
-          setFeatures={(value: string) => setFeatures(value)}
-          features={features}
-          setSortBy={(value: string) => setSortBy(value)}
-          sortBy={sortBy}
+          filterValues={filterValues}
+          onFilterChange={(newValues) => setFilterValues(newValues)}
         />
       )}
       <hr />
       <SearchResultsWrapper>
-        {type === "channel"
+        {filterValues.type === "channel"
           ? searchVideos.map((channel: ISearch, index) => {
               return <ChannelCard key={index} channel={channel} />;
             })

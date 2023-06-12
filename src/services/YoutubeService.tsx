@@ -1,57 +1,34 @@
 import axios from "axios";
 import { BaseUrl, YouTubeApiKey } from "../Const";
+import { IVideoSearchParams } from "../interfaces/videoSearchParams";
+import { ICommentParams } from "../interfaces/CommnetParam";
 
-interface Iprops {
-  results: number;
-  term?: string;
-  type?: string;
-  orderType?: string;
-  channelId?: string;
-  eventType?: string;
-  duration?: string;
-}
-export const fetchVideos = async ({
-  results,
-  term,
-  type,
-  orderType,
-  channelId,
-  eventType,
-  duration,
-}: Iprops) => {
+export const fetchVideos = async (videoParams: IVideoSearchParams) => {
   try {
     const res = await axios.get(`${BaseUrl}/search`, {
       params: {
         part: "snippet",
-        chart: "mostPopular",
-        maxResults: results,
+        maxResults: 10,
         key: YouTubeApiKey,
-        q: term,
-        type: type,
-        order: orderType,
-        channelId: channelId,
-        eventType: eventType,
-        videoDuration: duration,
-        // videoType: type,
+        ...videoParams,
       },
     });
-    return res.data.items;
+    return res.data;
   } catch (err) {
     return err;
   }
 };
-
-export const fetchComment = async (results: number, vId: string) => {
+export const fetchComment = async (commentParams: ICommentParams) => {
   try {
     const res = await axios.get(`${BaseUrl}/commentThreads`, {
       params: {
         part: "snippet",
-        maxResults: results,
+        maxResults: 10,
         key: YouTubeApiKey,
-        videoId: vId,
+        ...commentParams,
       },
     });
-    return res.data.items;
+    return res.data;
   } catch (err) {
     return err;
   }

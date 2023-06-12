@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { videoFilter } from "../../Util";
 import ButtonTab from "../Button/ButtonTab";
+import { IVideoSearchParams } from "../../interfaces/videoSearchParams";
 
 export interface IChannelVideos {
   id: {
@@ -26,36 +27,45 @@ interface Iprops {
 }
 const Videos = ({ onChange }: Iprops) => {
   const { channelId } = useParams();
-  const [results, setResults] = useState(10);
+  const [savePageToken, setSavePageToken] = useState("");
+  const [nextPageToken, setNextPageToken] = useState("");
   const [orderType, setOrderType] = useState("date");
   const [channelVideos, setChannelVideos] = useState<IChannelVideos[]>([]);
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 1 >=
       document.documentElement.scrollHeight
     ) {
-      setResults((prev) => prev + 10);
+      setNextPageToken(savePageToken);
     }
+  }, [setNextPageToken, savePageToken]);
+
+  const handleClick = (value: string) => {
+    setChannelVideos([]);
+    setOrderType(value);
   };
-  const getChannel = useCallback(async () => {
-    if (!channelId) {
-      return;
-    }
+  const getVideos = useCallback(async (value: IVideoSearchParams) => {
     try {
-      const videos = await fetchVideos({ results, orderType, channelId });
-      setChannelVideos(videos);
+      const data = await fetchVideos(value);
+      const { nextPageToken, items } = data;
+      setSavePageToken(nextPageToken);
+      setChannelVideos((prev) => [...prev, ...items]);
     } catch (er) {
       console.log(er);
     }
-  }, [channelId, results, orderType]);
+  }, []);
   useEffect(() => {
-    getChannel();
+    getVideos({
+      order: orderType,
+      channelId: channelId,
+      pageToken: nextPageToken,
+    });
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [getChannel]);
+  }, [getVideos, orderType, channelId, nextPageToken, handleScroll]);
   return (
     <>
       <ButtonWrapper>
@@ -66,7 +76,7 @@ const Videos = ({ onChange }: Iprops) => {
               display={tab.display}
               value={tab.value}
               orderType={orderType}
-              onClick={() => setOrderType(tab.value)}
+              onClick={() => handleClick(tab.value)}
             />
           );
         })}

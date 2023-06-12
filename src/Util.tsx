@@ -1,4 +1,4 @@
-interface Itab {
+export interface Itab {
   id: number;
   tab: string;
 }

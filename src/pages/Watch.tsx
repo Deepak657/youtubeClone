@@ -6,6 +6,8 @@ import { fetchComment, fetchVideos } from "../services/YoutubeService";
 import { useParams } from "react-router-dom";
 import { IHomeCard } from "./Home";
 import CommentCard from "../components/Cards/CommentCard";
+import { IVideoSearchParams } from "../interfaces/videoSearchParams";
+import { ICommentParams } from "../interfaces/CommnetParam";
 
 interface Iterm {
   term: string;
@@ -28,40 +30,48 @@ export interface Icomment {
 const Watch = ({ term, onChange }: Iterm) => {
   const [suggestVideos, setSuggestVideos] = useState<IHomeCard[]>([]);
   const [comment, setComment] = useState<Icomment[]>([]);
-
+  const [savePageToken, setSavePageToken] = useState("");
+  const [nextPageToken, setNextPageToken] = useState("");
+  const [saveCommentToken, setSaveCommentToken] = useState("");
+  const [CommentToken, setCommentToken] = useState("");
   const { vId } = useParams();
-  const [results, setResults] = useState(10);
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 1 >=
       document.documentElement.scrollHeight
     ) {
-      setResults((prev) => prev + 10);
+      setNextPageToken(savePageToken);
+      // setCommentToken(saveCommentToken);
     }
-  };
-  const getVideo = useCallback(async () => {
-    if (!term || !vId) {
-      return;
-    }
+  }, [setNextPageToken, savePageToken, saveCommentToken, setCommentToken]);
+
+  const getVideo = useCallback(async (value: IVideoSearchParams) => {
     try {
-      const videos = await fetchVideos({ results, term });
-      const comment = await fetchComment(results, vId);
-      setSuggestVideos(videos);
-      setComment(comment);
-      // console.log(comment);
+      const data = await fetchVideos(value);
+      const { nextPageToken, items } = data;
+      setSavePageToken(nextPageToken);
+      setSuggestVideos((prev) => [...prev, ...items]);
     } catch (err) {
       console.error(err);
     }
-  }, [results, term, vId]);
+  }, []);
+
+  const getComment = useCallback(async (commnetValue: ICommentParams) => {
+    const commentData = await fetchComment(commnetValue);
+    console.log(commentData);
+    // setSaveCommentToken(commentData.nextPageToken);
+    // setComment((prev) => [...prev, ...commentData.items]);
+  }, []);
 
   useEffect(() => {
-    getVideo();
+    getVideo({ q: term, pageToken: nextPageToken });
+    getComment({ videoId: vId, pageToken: CommentToken });
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [getVideo]);
+  }, [getVideo, getComment, term, handleScroll, vId]);
 
   return (
     <WatchWrapper>

@@ -11,7 +11,7 @@ interface Iprops extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const ButtonTab = ({ display, value, orderType, ...restProps }: Iprops) => {
   return (
-    <Button flag={orderType === value ? true : false} {...restProps}>
+    <Button flag={orderType === value} {...restProps}>
       {display}
     </Button>
   );
