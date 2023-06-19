@@ -1,19 +1,17 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React from "react";
 import { BsDot } from "react-icons/bs";
 import { Views } from "./HomeCard";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../../Theme";
-import { ISearch } from "../../pages/SearchResults";
-import { fetchChannel } from "../../services/YoutubeService";
 import moment from "moment";
+import { IHomeCard } from "../../interfaces/video";
 
 interface Iprops {
-  video: ISearch;
-  onChange: (value: string) => void;
+  video: IHomeCard;
 }
 
-const SearchVideoCard = ({ video, onChange }: Iprops) => {
+const SearchVideoCard = ({ video }: Iprops) => {
   const { id, snippet } = video;
   const {
     channelTitle,
@@ -23,28 +21,11 @@ const SearchVideoCard = ({ video, onChange }: Iprops) => {
     publishedAt,
     channelId,
   } = snippet;
-  const [channelImg, setChannelImg] = useState("");
 
   const navigate = useNavigate();
   const handleImage = (id: string, title: string) => {
     navigate(`/video/${id}`);
-    onChange(title);
   };
-
-  const getChannel = useCallback(async () => {
-    try {
-      const channel = await fetchChannel(channelId);
-      const { thumbnails } = channel.snippet;
-      setChannelImg(thumbnails.default.url);
-      // console.log(channel);
-    } catch (err) {
-      console.error(err);
-    }
-  }, [channelId]);
-
-  useEffect(() => {
-    getChannel();
-  }, [getChannel]);
 
   return (
     <SearchVideoCardWrapper>
@@ -63,7 +44,7 @@ const SearchVideoCard = ({ video, onChange }: Iprops) => {
           {moment(publishedAt).fromNow()}
         </Views>
         <ChannelTitleWrapper onClick={() => navigate(`/channel/${channelId}`)}>
-          <ImageChannel src={channelImg} alt="" />
+          <ImageChannel src={thumbnails.default.url} alt="" />
           <ChannelTitle>{channelTitle}</ChannelTitle>
         </ChannelTitleWrapper>
         <Description onClick={() => handleImage(id.videoId, title)}>

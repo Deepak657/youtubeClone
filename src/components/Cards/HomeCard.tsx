@@ -1,41 +1,22 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import { BsThreeDotsVertical, BsDot } from "react-icons/bs";
 import styled from "styled-components";
 import { theme } from "../../Theme";
-import { IHomeCard } from "../../pages/Home";
-import { fetchChannel } from "../../services/YoutubeService";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import { IHomeCard } from "../../interfaces/video";
 
 interface Iprops {
   video: IHomeCard;
-  onChange: (value: string) => void;
 }
 
-const HomeCard = ({ video, onChange }: Iprops) => {
+const HomeCard = ({ video }: Iprops) => {
   const { id, snippet } = video;
   const { channelTitle, publishedAt, thumbnails, title, channelId } = snippet;
-  const [channelImg, setChannelImg] = useState("");
   const navigate = useNavigate();
-  const handleImage = (videoId: string, title: string) => {
+  const handleImage = (videoId: string) => {
     navigate(`/video/${videoId}`);
-    onChange(title);
   };
-
-  const getChannel = useCallback(async () => {
-    try {
-      const channel = await fetchChannel(channelId);
-      const { thumbnails } = channel.snippet;
-      setChannelImg(thumbnails.default.url);
-      // console.log(channel);
-    } catch (err) {
-      console.error(err);
-    }
-  }, [channelId]);
-
-  useEffect(() => {
-    getChannel();
-  }, [getChannel]);
 
   return (
     <HomeCardStyle>
@@ -43,16 +24,16 @@ const HomeCard = ({ video, onChange }: Iprops) => {
         src={thumbnails.high.url}
         alt=""
         onClick={() => {
-          handleImage(id.videoId, title);
+          handleImage(id.videoId);
         }}
       />
       <Details>
         <ChannelImage
-          src={channelImg}
+          src={thumbnails.default.url}
           alt=""
           onClick={() => navigate(`/channel/${channelId}`)}
         />
-        <TitleWrapper onClick={() => handleImage(id.videoId, title)}>
+        <TitleWrapper onClick={() => handleImage(id.videoId)}>
           <Title>{title}</Title>
           <ChannelTitle>{channelTitle}</ChannelTitle>
           <Views>

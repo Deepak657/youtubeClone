@@ -1,37 +1,17 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import SearchVideoCard from "../components/Cards/SearchVideoCard";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { fetchVideos } from "../services/YoutubeService";
+// import { fetchVideos } from "../services/YoutubeService";
 import { Wrapper } from "./Home";
 import FilterCard from "../components/Cards/FilterCard";
-import { Ititle } from "./Home";
 import ChannelCard from "../components/Cards/ChannelCard";
 import { AiOutlineMenuFold } from "react-icons/ai";
 import { theme } from "../Theme";
-import { IVideoSearchParams } from "../interfaces/videoSearchParams";
-
-export interface ISearch {
-  id: {
-    videoId: string;
-    channelId: string;
-  };
-  snippet: {
-    channelId: string;
-    title: string;
-    channelTitle: string;
-    description: string;
-    publishedAt: string;
-    thumbnails: {
-      default: {
-        url: string;
-      };
-      high: {
-        url: string;
-      };
-    };
-  };
-}
+// import { IVideoSearchParams } from "../interfaces/videoSearchParams";
+import { fetchHomeVidoeStart } from "../redux/actions/HomeVideoActions";
+import { useDispatch } from "react-redux";
+import { useGSelector } from "../redux/Store";
 
 export interface SearchParams {
   type: string;
@@ -41,14 +21,11 @@ export interface SearchParams {
   sortBy: string;
 }
 
-const SearchResults = ({ onChange }: Ititle) => {
+const SearchResults = () => {
+  const dispatch = useDispatch();
   const { q } = useParams();
-  const [searchVideos, setSearchVideos] = useState<ISearch[]>([]);
-  const [savePageToken, setSavePageToken] = useState("");
-  const [nextPageToken, setNextPageToken] = useState("");
-
+  const { homeVideos } = useGSelector((state) => state.data);
   const [toggle, setToggle] = useState(false);
-
   const [filterValues, setFilterValues] = useState<SearchParams>({
     type: "",
     uploadDate: "",
@@ -57,33 +34,38 @@ const SearchResults = ({ onChange }: Ititle) => {
     sortBy: "",
   });
 
-  const handleScroll = useCallback(() => {
+  const handleScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 1 >=
       document.documentElement.scrollHeight
     ) {
-      setNextPageToken(savePageToken);
+      dispatch(
+        fetchHomeVidoeStart({
+          q: q,
+          chart: "mostPopular",
+          pageToken: q && homeVideos.get(q)?.nextPageToken,
+        })
+      );
     }
-  }, [setNextPageToken, savePageToken]);
-  const fetchResults = useCallback(async (value: IVideoSearchParams) => {
-    try {
-      const data = await fetchVideos(value);
-      const { nextPageToken, items } = data;
-      setSavePageToken(nextPageToken);
-      setSearchVideos((prev) => [...prev, ...items]);
-      // console.log(data);
-    } catch (err) {
-      console.error(err);
+  };
+  useEffect(() => {
+    if (q && homeVideos.has(q)) {
+      return;
     }
-  }, []);
+    dispatch(
+      fetchHomeVidoeStart({
+        q: q,
+        chart: "mostPopular",
+      })
+    );
+  }, [q, homeVideos]);
 
   useEffect(() => {
-    fetchResults({ q: q, chart: "mostPopular", pageToken: nextPageToken });
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [fetchResults, q, nextPageToken, handleScroll]);
+  }, [handleScroll]);
 
   return (
     <Wrapper>
@@ -99,19 +81,18 @@ const SearchResults = ({ onChange }: Ititle) => {
       )}
       <hr />
       <SearchResultsWrapper>
-        {filterValues.type === "channel"
-          ? searchVideos.map((channel: ISearch, index) => {
+        {/* {filterValues.type === "channel"
+          ? homeVideos.map((channel, index) => {
               return <ChannelCard key={index} channel={channel} />;
             })
-          : searchVideos.map((video: ISearch, index) => {
-              return (
-                <SearchVideoCard
-                  key={index}
-                  video={video}
-                  onChange={onChange}
-                />
-              );
-            })}
+          : homeVideos.map((video, index) => {
+              return <SearchVideoCard key={index} video={video} />;
+            })} */}
+
+        {q &&
+          homeVideos.get(q)?.items.map((video, index) => {
+            return <SearchVideoCard key={index} video={video} />;
+          })}
       </SearchResultsWrapper>
     </Wrapper>
   );

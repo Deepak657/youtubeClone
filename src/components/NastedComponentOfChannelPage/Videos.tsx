@@ -1,71 +1,61 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChannelVideoCard from "../Cards/ChannelVideoCard";
-import { fetchVideos } from "../../services/YoutubeService";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { videoFilter } from "../../Util";
 import ButtonTab from "../Button/ButtonTab";
-import { IVideoSearchParams } from "../../interfaces/videoSearchParams";
+import { fetchChannelVidoeStart } from "../../redux/actions/ChannelVideosAction";
+import { useDispatch } from "react-redux";
+import { useGSelector } from "../../redux/Store";
 
-export interface IChannelVideos {
-  id: {
-    videoId: string;
-  };
-  snippet: {
-    publishedAt: string;
-    title: string;
-    thumbnails: {
-      high: {
-        url: string;
-      };
-    };
-  };
-}
-
-interface Iprops {
-  onChange: (value: string) => void;
-}
-const Videos = ({ onChange }: Iprops) => {
-  const { channelId } = useParams();
-  const [savePageToken, setSavePageToken] = useState("");
-  const [nextPageToken, setNextPageToken] = useState("");
+const Videos = () => {
   const [orderType, setOrderType] = useState("date");
-  const [channelVideos, setChannelVideos] = useState<IChannelVideos[]>([]);
+  const { channelId } = useParams();
+  const dispatch = useDispatch();
+  const { channelVideos } = useGSelector((state) => state.channelVideoData);
 
-  const handleScroll = useCallback(() => {
+  const channel = channelVideos.get(`${channelId}${orderType}`);
+
+  // console.log(channel);
+
+  const handleClick = (value: string) => {
+    setOrderType(value);
+  };
+
+  const handleScroll = () => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 1 >=
       document.documentElement.scrollHeight
     ) {
-      setNextPageToken(savePageToken);
+      dispatch(
+        fetchChannelVidoeStart({
+          order: orderType,
+          channelId: channelId,
+          pageToken: channel?.nextPageToken,
+        })
+      );
     }
-  }, [setNextPageToken, savePageToken]);
-
-  const handleClick = (value: string) => {
-    setChannelVideos([]);
-    setOrderType(value);
   };
-  const getVideos = useCallback(async (value: IVideoSearchParams) => {
-    try {
-      const data = await fetchVideos(value);
-      const { nextPageToken, items } = data;
-      setSavePageToken(nextPageToken);
-      setChannelVideos((prev) => [...prev, ...items]);
-    } catch (er) {
-      console.log(er);
-    }
-  }, []);
   useEffect(() => {
-    getVideos({
-      order: orderType,
-      channelId: channelId,
-      pageToken: nextPageToken,
-    });
+    if (channelVideos.has(`${channelId}${orderType}`)) {
+      return;
+    }
+
+    dispatch(
+      fetchChannelVidoeStart({
+        order: orderType,
+        channelId: channelId,
+      })
+    );
+  }, [orderType, channelId, channelVideos]);
+
+  useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [getVideos, orderType, channelId, nextPageToken, handleScroll]);
+  }, [handleScroll]);
+
   return (
     <>
       <ButtonWrapper>
@@ -82,10 +72,8 @@ const Videos = ({ onChange }: Iprops) => {
         })}
       </ButtonWrapper>
       <VideosWrapper>
-        {channelVideos.map((video: IChannelVideos, index) => {
-          return (
-            <ChannelVideoCard video={video} key={index} onChange={onChange} />
-          );
+        {channel?.items.map((video, index) => {
+          return <ChannelVideoCard video={video} key={index} />;
         })}
       </VideosWrapper>
     </>

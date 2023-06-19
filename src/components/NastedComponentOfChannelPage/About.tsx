@@ -1,59 +1,43 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import { BsFlag } from "react-icons/bs";
 import { BiShare } from "react-icons/bi";
 import styled from "styled-components";
 import { theme } from "../../Theme";
-import { fetchChannel } from "../../services/YoutubeService";
 import { useParams } from "react-router-dom";
 import moment from "moment";
+import { useGSelector } from "../../redux/Store";
 
 const About = () => {
   const { channelId } = useParams();
-  const [country, setCountry] = useState("");
-  const [description, setDescription] = useState("");
-  const [publishedAt, setPublishedAt] = useState("");
-  const [viewCount, setViewCount] = useState("");
+  const { channel } = useGSelector((state) => state.channelData);
+  const channelDetails = channelId && channel.get(channelId)?.[0];
 
-  const getChannel = useCallback(async () => {
-    if (!channelId) {
-      return;
-    }
-    try {
-      const channel = await fetchChannel(channelId);
-      const { country, description, publishedAt } = channel.snippet;
-      const { viewCount } = channel.statistics;
-      setCountry(country);
-      setDescription(description);
-      setPublishedAt(publishedAt);
-      setViewCount(viewCount);
-      console.log(channel);
-    } catch (er) {
-      console.log(er);
-    }
-  }, [channelId]);
-  useEffect(() => {
-    getChannel();
-  }, [getChannel]);
   return (
-    <AboutWrapper>
-      <DescriptionDetailsWrapper>
-        <Title>Description</Title>
-        <Description>{description}</Description>
-        <Title>Details</Title>
-        <Details>
-          Location: <span>{country}</span>
-        </Details>
-      </DescriptionDetailsWrapper>
-      <StatsWrapper>
-        <Stats>Stats</Stats>
-        <Stats>joined {moment(publishedAt).fromNow()}</Stats>
-        <Stats>{viewCount} views</Stats>
-        <Icon>
-          <BsFlag />
-          <BiShare />
-        </Icon>
-      </StatsWrapper>
-    </AboutWrapper>
+    <>
+      {channelDetails && (
+        <AboutWrapper>
+          <DescriptionDetailsWrapper>
+            <Title>Description</Title>
+            <Description>{channelDetails.snippet.description}</Description>
+            <Title>Details</Title>
+            <Details>
+              Location: <span>{channelDetails.snippet.country}</span>
+            </Details>
+          </DescriptionDetailsWrapper>
+          <StatsWrapper>
+            <Stats>Stats</Stats>
+            <Stats>
+              joined {moment(channelDetails.snippet.publishedAt).fromNow()}
+            </Stats>
+            <Stats>{channelDetails.statistics.viewCount} views</Stats>
+            <Icon>
+              <BsFlag />
+              <BiShare />
+            </Icon>
+          </StatsWrapper>
+        </AboutWrapper>
+      )}
+    </>
   );
 };
 const DescriptionDetailsWrapper = styled.div`

@@ -5,21 +5,19 @@ import { BsThreeDotsVertical, BsDot } from "react-icons/bs";
 import { theme } from "../../Theme";
 import { Views } from "./HomeCard";
 import { Image } from "./PlayListCard";
-import { IChannelVideos } from "../NastedComponentOfChannelPage/Videos";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import { IHomeCard } from "../../interfaces/video";
 
 interface Iprops {
-  video: IChannelVideos;
-  onChange: (value: string) => void;
+  video: IHomeCard;
 }
-const ChannelVideoCard = ({ video, onChange }: Iprops) => {
+const ChannelVideoCard = ({ video }: Iprops) => {
   const navigate = useNavigate();
   const { id, snippet } = video;
   const { title, publishedAt, thumbnails } = snippet;
   const handleChange = (id: string, title: string) => {
     navigate(`/video/${id}`);
-    onChange(title);
   };
   return (
     <ChannelVideoCardWrapper onClick={() => handleChange(id.videoId, title)}>

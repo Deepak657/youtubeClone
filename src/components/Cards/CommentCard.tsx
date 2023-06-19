@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { theme } from "../../Theme";
-import { Icomment } from "../../pages/Watch";
 import { BiLike, BiDislike } from "react-icons/bi";
 import moment from "moment";
+import { Icomment } from "../../interfaces/comment";
 
 interface Iprops {
   comment: Icomment;

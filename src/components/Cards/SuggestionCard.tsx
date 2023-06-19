@@ -4,30 +4,21 @@ import { Views } from "./HomeCard";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../../Theme";
-import { IHomeCard } from "../../pages/Home";
 import moment from "moment";
+import { IHomeCard } from "../../interfaces/video";
 
 interface Iprops {
   video: IHomeCard;
-  onChange: (value: string) => void;
 }
 
-const SuggestionCard = ({ video, onChange }: Iprops) => {
+const SuggestionCard = ({ video }: Iprops) => {
   const navigate = useNavigate();
   const { channelTitle, thumbnails, title, publishedAt } = video.snippet;
-  const handleImage = (title: string) => {
-    onChange(title);
-  };
-
   return (
     <SuggestionCardWrapper
       onClick={() => navigate(`/video/${video.id.videoId}`)}
     >
-      <Image
-        src={thumbnails.high.url}
-        alt=""
-        onClick={() => handleImage(title)}
-      />
+      <Image src={thumbnails.high.url} alt="" />
       <Genric>
         <Title>{title}</Title>
         <ChannelTitle>{channelTitle}</ChannelTitle>

@@ -16,45 +16,20 @@ import Live from "./components/NastedComponentOfChannelPage/Live";
 import { SkeletonTheme } from "react-loading-skeleton";
 
 function App() {
-  const [title, setTitle] = useState("");
-  // console.log(title);
-
   return (
     <>
       <SkeletonTheme baseColor="#333" highlightColor="#555">
         <GlobalStyle />
         <Header />
         <Routes>
-          <Route
-            path="/"
-            element={<Home onChange={(value: string) => setTitle(value)} />}
-          />
-          <Route
-            path="results/:q?"
-            element={
-              <SearchResults onChange={(value: string) => setTitle(value)} />
-            }
-          />
-          <Route
-            path="video/:vId?"
-            element={
-              <Watch
-                term={title}
-                onChange={(value: string) => setTitle(value)}
-              />
-            }
-          />
+          <Route path="/" element={<Home />} />
+          <Route path="results/:q?" element={<SearchResults />} />
+          <Route path="video/:vId?" element={<Watch />} />
           <Route path="channel/:channelId?" element={<Channel />}>
             <Route index element={<ChannelsHome />} />
             <Route path="featured" element={<ChannelsHome />} />
-            <Route
-              path="videos"
-              element={<Videos onChange={(value: string) => setTitle(value)} />}
-            />
-            <Route
-              path="streams"
-              element={<Live onChange={(value: string) => setTitle(value)} />}
-            />
+            <Route path="videos" element={<Videos />} />
+            <Route path="streams" element={<Live />} />
             <Route path="playlists" element={<PlayLists />} />
             <Route path="community" element={<Community />} />
             <Route path="channels" element={<Channels />} />

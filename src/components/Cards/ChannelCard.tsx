@@ -1,28 +1,30 @@
 import React from "react";
 import styled from "styled-components";
 import { theme } from "../../Theme";
-import { ISearch } from "../../pages/SearchResults";
 import { useNavigate } from "react-router-dom";
+import { IChannel } from "../../interfaces/channels";
 
 interface Iprops {
-  channel: ISearch;
+  channel?: IChannel;
 }
 
 const ChannelCard = ({ channel }: Iprops) => {
   const navigate = useNavigate();
-  const { id, snippet } = channel;
-  const { channelTitle, description, thumbnails } = snippet;
+
   return (
-    <ChannelCardWrapper onClick={() => navigate(`/channel/${id.channelId}`)}>
+    <ChannelCardWrapper
+      onClick={() => navigate(`/channel/${channel?.id.channelId}`)}
+    >
       <ImageWrapper>
-        <Image src={thumbnails.high.url} alt="" />
+        <Image src={channel?.snippet.thumbnails.high.url} alt="" />
       </ImageWrapper>
       <TitleWrapper>
-        <ChannelName>{channelTitle}</ChannelName>
+        <ChannelName>{channel?.snippet.channelTitle}</ChannelName>
         <ChannelSubscribes>
-          @{id.channelId} . {Math.floor(Math.random() * 100 + 1)}K subscribes
+          {channel?.snippet.customUrl} . {Math.floor(Math.random() * 100 + 1)}K
+          subscribes
         </ChannelSubscribes>
-        <Description>{description}</Description>
+        <Description>{channel?.snippet.description}</Description>
       </TitleWrapper>
       <Button>Subscribe</Button>
     </ChannelCardWrapper>

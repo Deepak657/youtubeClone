@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { fetchWatchVideoChannel } from "../services/YoutubeService";
+import React from "react";
 import styled from "styled-components";
 import { theme } from "../Theme";
 import { Button } from "./Cards/ChannelCard";
@@ -7,36 +6,19 @@ import { BiLike, BiDislike, BiCut } from "react-icons/bi";
 import { FaShare } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import { useGSelector } from "../redux/Store";
 
 interface Iprops {
   id?: string;
 }
 const VIdeoPlay = ({ id }: Iprops) => {
   const navigate = useNavigate();
-  const [title, setTitle] = useState("");
-  const [channelTitle, setChannelTitle] = useState("");
-  const [channelId, setChannelId] = useState("");
-  const [imgUrl, setImgUrl] = useState("");
 
-  const getVideoChannel = useCallback(async () => {
-    if (!id) {
-      return;
-    }
-    try {
-      const res = await fetchWatchVideoChannel(id);
-      const { title, channelTitle, channelId, thumbnails } = res;
-      setTitle(title);
-      setChannelTitle(channelTitle);
-      setChannelId(channelId);
-      setImgUrl(thumbnails.high.url);
-    } catch (err) {
-      console.error(err);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    getVideoChannel();
-  }, [getVideoChannel]);
+  const { homeVideos, q } = useGSelector((state) => state.data);
+  const videoDetails = homeVideos
+    .get(q)
+    ?.items.find((video) => video.id.videoId === id)?.snippet;
+  // console.log(videoDetails);
 
   return (
     <>
@@ -49,12 +31,14 @@ const VIdeoPlay = ({ id }: Iprops) => {
         allowFullScreen
         title="Embedded youtube"
       />
-      <Title>{title}</Title>
+      <Title>{videoDetails?.title}</Title>
       <ChannelIconWrapper>
-        <ChannelWrapper onClick={() => navigate(`/channel/${channelId}`)}>
-          <Image src={imgUrl} alt="" />
+        <ChannelWrapper
+          onClick={() => navigate(`/channel/${videoDetails?.channelId}`)}
+        >
+          <Image src={videoDetails?.thumbnails.default.url} alt="" />
           <div>
-            <ChannelTitle>{channelTitle}</ChannelTitle>
+            <ChannelTitle>{videoDetails?.channelTitle}</ChannelTitle>
             <Subscribers>
               {" "}
               {Math.floor(Math.random() * 100 + 1)}K subscribers
