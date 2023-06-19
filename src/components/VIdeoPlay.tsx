@@ -5,8 +5,8 @@ import { Button } from "./Cards/ChannelCard";
 import { BiLike, BiDislike, BiCut } from "react-icons/bi";
 import { FaShare } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
-import { useGSelector } from "../redux/Store";
+import { useLocation, useNavigate } from "react-router-dom";
+import { IHomeCard } from "../interfaces/video";
 
 interface Iprops {
   id?: string;
@@ -14,11 +14,12 @@ interface Iprops {
 const VIdeoPlay = ({ id }: Iprops) => {
   const navigate = useNavigate();
 
-  const { homeVideos, q } = useGSelector((state) => state.data);
-  const videoDetails = homeVideos
-    .get(q)
-    ?.items.find((video) => video.id.videoId === id)?.snippet;
-  // console.log(videoDetails);
+  const location = useLocation();
+  const recivedVideoDetails: IHomeCard = location.state.videoDetails;
+
+  const {
+    snippet: { title, channelId, channelTitle, thumbnails },
+  } = recivedVideoDetails;
 
   return (
     <>
@@ -31,14 +32,12 @@ const VIdeoPlay = ({ id }: Iprops) => {
         allowFullScreen
         title="Embedded youtube"
       />
-      <Title>{videoDetails?.title}</Title>
+      <Title>{title}</Title>
       <ChannelIconWrapper>
-        <ChannelWrapper
-          onClick={() => navigate(`/channel/${videoDetails?.channelId}`)}
-        >
-          <Image src={videoDetails?.thumbnails.default.url} alt="" />
+        <ChannelWrapper onClick={() => navigate(`/channel/${channelId}`)}>
+          <Image src={thumbnails.default.url} alt="" />
           <div>
-            <ChannelTitle>{videoDetails?.channelTitle}</ChannelTitle>
+            <ChannelTitle>{channelTitle}</ChannelTitle>
             <Subscribers>
               {" "}
               {Math.floor(Math.random() * 100 + 1)}K subscribers

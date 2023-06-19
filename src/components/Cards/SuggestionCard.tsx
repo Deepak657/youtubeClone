@@ -2,21 +2,21 @@ import React from "react";
 import { BsDot } from "react-icons/bs";
 import { Views } from "./HomeCard";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import { theme } from "../../Theme";
 import moment from "moment";
 import { IHomeCard } from "../../interfaces/video";
+import { Link } from "react-router-dom";
 
 interface Iprops {
   video: IHomeCard;
 }
 
 const SuggestionCard = ({ video }: Iprops) => {
-  const navigate = useNavigate();
   const { channelTitle, thumbnails, title, publishedAt } = video.snippet;
   return (
-    <SuggestionCardWrapper
-      onClick={() => navigate(`/video/${video.id.videoId}`)}
+    <LinkStyle
+      to={`/video/${video.id.videoId}`}
+      state={{ videoDetails: video }}
     >
       <Image src={thumbnails.high.url} alt="" />
       <Genric>
@@ -30,7 +30,7 @@ const SuggestionCard = ({ video }: Iprops) => {
           {moment(publishedAt).fromNow()}
         </Views>
       </Genric>
-    </SuggestionCardWrapper>
+    </LinkStyle>
   );
 };
 
@@ -39,6 +39,15 @@ const ChannelTitle = styled.div`
   color: ${theme.color.lightwhite};
 `;
 
+const LinkStyle = styled(Link)`
+  width: 380px;
+  display: flex;
+  /* align-items: flex-start; */
+  gap: 10px;
+  cursor: pointer;
+  height: 90px;
+  text-decoration: none;
+`;
 const Title = styled.div`
   font-size: 14px;
   margin-bottom: 5px;
@@ -58,14 +67,5 @@ const Image = styled.img`
 
 const Genric = styled.div`
   max-width: 100%;
-`;
-
-const SuggestionCardWrapper = styled.div`
-  width: 380px;
-  display: flex;
-  /* align-items: flex-start; */
-  gap: 10px;
-  cursor: pointer;
-  height: 90px;
 `;
 export default SuggestionCard;

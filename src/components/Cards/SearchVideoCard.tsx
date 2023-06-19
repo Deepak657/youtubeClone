@@ -2,7 +2,7 @@ import React from "react";
 import { BsDot } from "react-icons/bs";
 import { Views } from "./HomeCard";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { theme } from "../../Theme";
 import moment from "moment";
 import { IHomeCard } from "../../interfaces/video";
@@ -23,19 +23,16 @@ const SearchVideoCard = ({ video }: Iprops) => {
   } = snippet;
 
   const navigate = useNavigate();
-  const handleImage = (id: string, title: string) => {
-    navigate(`/video/${id}`);
-  };
 
   return (
     <SearchVideoCardWrapper>
-      <Image
-        src={thumbnails.high.url}
-        alt=""
-        onClick={() => handleImage(id.videoId, title)}
-      />
+      <LinkStyle to={`/video/${id.videoId}`} state={{ videoDetails: video }}>
+        <Image src={thumbnails.high.url} alt="" />
+      </LinkStyle>
       <Genric>
-        <Title onClick={() => handleImage(id.videoId, title)}>{title}</Title>
+        <Title to={`/video/${id.videoId}`} state={{ videoDetails: video }}>
+          {title}
+        </Title>
         <Views>
           {Math.floor(Math.random() * 100 + 1)}M Views{" "}
           <span>
@@ -47,7 +44,10 @@ const SearchVideoCard = ({ video }: Iprops) => {
           <ImageChannel src={thumbnails.default.url} alt="" />
           <ChannelTitle>{channelTitle}</ChannelTitle>
         </ChannelTitleWrapper>
-        <Description onClick={() => handleImage(id.videoId, title)}>
+        <Description
+          to={`/video/${id.videoId}`}
+          state={{ videoDetails: video }}
+        >
           {description}
         </Description>
         {/* <div>
@@ -58,6 +58,12 @@ const SearchVideoCard = ({ video }: Iprops) => {
     </SearchVideoCardWrapper>
   );
 };
+
+const LinkStyle = styled(Link)`
+  text-decoration: none;
+  height: 200px;
+  width: 360px;
+`;
 
 const ChannelTitle = styled.div`
   font-size: 14px;
@@ -78,21 +84,23 @@ const ImageChannel = styled.img`
   object-fit: cover;
 `;
 
-const Title = styled.div`
+const Title = styled(Link)`
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 5px;
+  text-decoration: none;
   color: ${theme.color.white};
 `;
 
-const Description = styled.div`
+const Description = styled(Link)`
   font-size: 14px;
+  text-decoration: none;
   color: ${theme.color.lightwhite};
 `;
 const Image = styled.img`
   width: 360px;
-  height: auto;
   object-fit: cover;
+  height: 100%;
   border-radius: 14px;
 `;
 
@@ -105,7 +113,6 @@ const SearchVideoCardWrapper = styled.div`
   max-width: 1100px;
   display: flex;
   gap: 20px;
-  height: 200px;
   cursor: pointer;
 `;
 export default SearchVideoCard;

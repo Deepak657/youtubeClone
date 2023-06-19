@@ -5,7 +5,7 @@ import { theme } from "../../Theme";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { IHomeCard } from "../../interfaces/video";
-
+import { Link } from "react-router-dom";
 interface Iprops {
   video: IHomeCard;
 }
@@ -14,36 +14,32 @@ const HomeCard = ({ video }: Iprops) => {
   const { id, snippet } = video;
   const { channelTitle, publishedAt, thumbnails, title, channelId } = snippet;
   const navigate = useNavigate();
-  const handleImage = (videoId: string) => {
-    navigate(`/video/${videoId}`);
-  };
 
   return (
     <HomeCardStyle>
-      <Image
-        src={thumbnails.high.url}
-        alt=""
-        onClick={() => {
-          handleImage(id.videoId);
-        }}
-      />
+      <LinkStyle to={`/video/${id.videoId}`} state={{ videoDetails: video }}>
+        <Image src={thumbnails.high.url} alt="" />
+      </LinkStyle>
       <Details>
         <ChannelImage
           src={thumbnails.default.url}
           alt=""
           onClick={() => navigate(`/channel/${channelId}`)}
         />
-        <TitleWrapper onClick={() => handleImage(id.videoId)}>
-          <Title>{title}</Title>
-          <ChannelTitle>{channelTitle}</ChannelTitle>
-          <Views>
-            {Math.floor(Math.random() * 100 + 1)}M Views{" "}
-            <span>
-              <BsDot />
-            </span>
-            {moment(publishedAt).fromNow()}
-          </Views>
-        </TitleWrapper>
+        <LinkStyle to={`/video/${id.videoId}`} state={{ videoDetails: video }}>
+          <TitleWrapper>
+            <Title>{title}</Title>
+            <ChannelTitle>{channelTitle}</ChannelTitle>
+            <Views>
+              {Math.floor(Math.random() * 100 + 1)}M Views{" "}
+              <span>
+                <BsDot />
+              </span>
+              {moment(publishedAt).fromNow()}
+            </Views>
+          </TitleWrapper>
+        </LinkStyle>
+
         <Menu>
           <BsThreeDotsVertical />
         </Menu>
@@ -51,6 +47,10 @@ const HomeCard = ({ video }: Iprops) => {
     </HomeCardStyle>
   );
 };
+
+export const LinkStyle = styled(Link)`
+  text-decoration: none;
+`;
 
 export const Views = styled.div`
   display: flex;

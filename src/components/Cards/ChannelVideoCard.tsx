@@ -5,7 +5,7 @@ import { BsThreeDotsVertical, BsDot } from "react-icons/bs";
 import { theme } from "../../Theme";
 import { Views } from "./HomeCard";
 import { Image } from "./PlayListCard";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import moment from "moment";
 import { IHomeCard } from "../../interfaces/video";
 
@@ -13,14 +13,13 @@ interface Iprops {
   video: IHomeCard;
 }
 const ChannelVideoCard = ({ video }: Iprops) => {
-  const navigate = useNavigate();
   const { id, snippet } = video;
   const { title, publishedAt, thumbnails } = snippet;
-  const handleChange = (id: string, title: string) => {
-    navigate(`/video/${id}`);
-  };
   return (
-    <ChannelVideoCardWrapper onClick={() => handleChange(id.videoId, title)}>
+    <ChannelVideoCardWrapper
+      to={`/video/${id.videoId}`}
+      state={{ videoDetails: video }}
+    >
       <Image src={thumbnails.high.url} alt="" />
       <TitleWrapper>
         <Title>{title}</Title>
@@ -37,8 +36,9 @@ const ChannelVideoCard = ({ video }: Iprops) => {
   );
 };
 
-const ChannelVideoCardWrapper = styled.div`
+const ChannelVideoCardWrapper = styled(Link)`
   width: 300px;
+  text-decoration: none;
   cursor: pointer;
 `;
 

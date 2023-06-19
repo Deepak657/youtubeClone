@@ -11,6 +11,8 @@ const Channel = () => {
   const { channelId } = useParams();
   const dispatch = useDispatch();
   const { channel } = useGSelector((state) => state.channelData);
+  channelId && console.log(channel.get(channelId)?.[0]);
+
   useEffect(() => {
     if (channelId && channel.has(channelId)) {
       return;

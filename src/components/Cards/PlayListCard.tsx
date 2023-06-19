@@ -2,18 +2,25 @@ import React from "react";
 import styled from "styled-components";
 import { RiPlayList2Fill } from "react-icons/ri";
 import { theme } from "../../Theme";
+import { IPlaylist } from "../NastedComponentOfChannelPage/PlayLists";
 
-const PlayListCard = () => {
+interface Iprops {
+  item: IPlaylist;
+}
+const PlayListCard = ({ item }: Iprops) => {
+  const {
+    pageInfo: { totalResults },
+    imgUrl,
+    mainTitle,
+  } = item;
   return (
     <PlayListCardWrapper>
-      <Image
-        src="https://i.ytimg.com/vi/1VK9yV9rWb4/hqdefault.jpg?sqp=-oaymwEjCNACELwBSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLCjtjS1ZTV-I2sBt3Cr6rYGTkCOcg"
-        alt=""
-      />
+      <Image src={imgUrl} alt="" />
       <PlayListMenu>
-        <RiPlayList2Fill />1 video
+        <RiPlayList2Fill />
+        {totalResults} video
       </PlayListMenu>
-      <PlayListName>Punjabi Songs</PlayListName>
+      <PlayListName>{mainTitle}</PlayListName>
     </PlayListCardWrapper>
   );
 };
@@ -36,6 +43,7 @@ const PlayListMenu = styled.div`
 
 const PlayListCardWrapper = styled.div`
   width: 300px;
+  cursor: pointer;
 `;
 export const Image = styled.img`
   width: 100%;

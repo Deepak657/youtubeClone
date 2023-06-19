@@ -111,6 +111,23 @@ export const fetchChannelVideos = async (
   }
 };
 
+export const fetchChannelPlaylist = async (videoParams: IVideoSearchParams) => {
+  try {
+    const res = await axios.get(`${BaseUrl}/search`, {
+      params: {
+        part: "snippet",
+        maxResults: 20,
+        key: YouTubeApiKey,
+        ...videoParams,
+      },
+    });
+
+    return res.data.items;
+  } catch (err) {
+    return err;
+  }
+};
+
 // export const fetchWatchVideoChannel = async (id: string) => {
 //   try {
 //     const res = await axios.get(`${BaseUrl}/videos`, {
@@ -126,18 +143,18 @@ export const fetchChannelVideos = async (
 //   }
 // };
 
-// export const fetchPlayList = async (playlistId: string) => {
-//   try {
-//     const res = await axios.get(`${BaseUrl}/playlistItems`, {
-//       params: {
-//         part: "snippet",
-//         maxResults: 10,
-//         key: YouTubeApiKey,
-//         playlistId: playlistId,
-//       },
-//     });
-//     return res.data.items;
-//   } catch (err) {
-//     return err;
-//   }
-// };
+export const fetchPlayList = async (playlistId: string) => {
+  try {
+    const res = await axios.get(`${BaseUrl}/playlistItems`, {
+      params: {
+        part: "snippet",
+        maxResults: 10,
+        key: YouTubeApiKey,
+        playlistId: playlistId,
+      },
+    });
+    return res.data;
+  } catch (err) {
+    return err;
+  }
+};

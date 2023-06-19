@@ -2,6 +2,7 @@ import { call, put, all, fork, takeLatest } from "redux-saga/effects";
 
 import {
   fetchChannel,
+  fetchChannelPlaylist,
   fetchChannelVideos,
   fetchComment,
   fetchSuggestionVideos,
@@ -110,6 +111,21 @@ function* onLoadChannelVideosAsync({ value }: any) {
 export function* onLoadChannelVideos() {
   yield takeLatest(FETCH_CHANNEL_VIDEO_START, onLoadChannelVideosAsync);
 }
+
+/////////////////channelPlaylist
+
+// function* onLoadChannelPlaylistVideosAsync({ value }: any) {
+//   try {
+//     const res: IHomeVideoData = yield call(fetchChannelPlaylist, value);
+//     yield put(fetchChannelVidoeSuccess(res));
+//   } catch (error) {
+//     yield put(fetchChannelVideoFail("error"));
+//   }
+// }
+
+// export function* onLoadChannelPlaylistVideos() {
+//   yield takeLatest(FETCH_CHANNEL_VIDEO_START, onLoadChannelPlaylistVideosAsync);
+// }
 
 const HomeVideoSaga = [
   fork(onLoadHomeVideo),
