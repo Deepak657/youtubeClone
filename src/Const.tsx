@@ -1,7 +1,7 @@
 import React from "react";
 
 export const BaseUrl = "https://www.googleapis.com/youtube/v3";
-export const YouTubeApiKey = "AIzaSyAoAGjukxjbOEXBc1fQDewX5W3wgmfXQQE";
+export const YouTubeApiKey = "AIzaSyAjLW-WK5_0vTJFPU-y--qEoupk27HCMlc";
 
 //   api1 = AIzaSyAjLW-WK5_0vTJFPU-y--qEoupk27HCMlc
 //   api2 = AIzaSyAoAGjukxjbOEXBc1fQDewX5W3wgmfXQQE
